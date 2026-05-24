@@ -1,7 +1,8 @@
+// src/data/languages.js
 export const LANGUAGES = [
-  { code: "en-US", label: "English" },
-  { code: "rw-RW", label: "Kinyarwanda" },
-  { code: "sw-KE", label: "Swahili" },
-  { code: "am-ET", label: "Amharic" },
-  { code: "fr-FR", label: "French" },
+  { code: "en", label: "🇬🇧 English" },
+  { code: "fr", label: "🇫🇷 Français" },
+  { code: "sw", label: "🇰🇪 Kiswahili" },
+  { code: "am", label: "🇪🇹 አማርኛ" },
+  { code: "rw", label: "🇷🇼 Kinyarwanda" },
 ];

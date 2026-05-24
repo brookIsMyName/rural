@@ -1,12 +1,14 @@
-const KEY = "rc_language";
+// src/utils/language.js
+// Single source of truth for language — uses localStorage, defaults to "en"
+
+const KEY = "rc_lang";
 
 export function getLanguage() {
-  return localStorage.getItem(KEY) || "en-US";
+  return localStorage.getItem(KEY) || "en";
 }
 
 export function setLanguage(lang) {
   localStorage.setItem(KEY, lang);
-
-  // 🔥 manual trigger for same-tab updates
-  window.dispatchEvent(new Event("languagechange"));
+  // Fire a custom event so every component can react
+  window.dispatchEvent(new CustomEvent("rc:langchange", { detail: { lang } }));
 }
