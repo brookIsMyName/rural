@@ -1,0 +1,188 @@
+[
+  {
+    "id": 1,
+    "category": "Burns",
+    "icon": "🔥",
+    "color": "#ef4444",
+    "signs": [
+      "Red, blistered, or charred skin",
+      "Severe pain or numbness",
+      "Swelling around the burn area"
+    ],
+    "dos": [
+      "Cool the burn with running cool (not cold) water for 10–20 minutes",
+      "Cover loosely with a clean, non-fluffy cloth or cling wrap",
+      "Remove rings or tight items near the burn before swelling starts",
+      "Give paracetamol for pain if available"
+    ],
+    "donts": [
+      "Do NOT use ice, butter, toothpaste, or oil on burns",
+      "Do NOT burst blisters",
+      "Do NOT remove clothing stuck to the burn",
+      "Do NOT use fluffy cotton wool directly on the wound"
+    ],
+    "urgent": "Seek immediate care for burns larger than your palm, burns on face/hands/genitals, or burns that are deep and painless (nerve damage)."
+  },
+  {
+    "id": 2,
+    "category": "Severe Bleeding",
+    "icon": "🩸",
+    "color": "#dc2626",
+    "signs": [
+      "Blood soaking through clothing",
+      "Wound that won't stop bleeding",
+      "Pale, cold, or confused person"
+    ],
+    "dos": [
+      "Apply firm, direct pressure with a clean cloth",
+      "Keep pressing — do not remove cloth (add more on top if soaked)",
+      "Elevate the injured area above the heart if possible",
+      "Keep the person still and warm"
+    ],
+    "donts": [
+      "Do NOT remove the cloth to check the wound",
+      "Do NOT use a tourniquet unless trained and only for limbs with life-threatening bleeding",
+      "Do NOT give food or water if surgery may be needed"
+    ],
+    "urgent": "All serious bleeding requires clinic or hospital care urgently. Call for help immediately."
+  },
+  {
+    "id": 3,
+    "category": "Choking",
+    "icon": "🫁",
+    "color": "#f97316",
+    "signs": [
+      "Cannot speak, cough, or breathe",
+      "Clutching throat",
+      "Face turning blue or red"
+    ],
+    "dos": [
+      "Encourage them to cough forcefully if they can",
+      "Give up to 5 firm back blows between shoulder blades",
+      "If back blows fail: give up to 5 abdominal thrusts (Heimlich maneuver)",
+      "For infants: use gentle back taps and chest thrusts only"
+    ],
+    "donts": [
+      "Do NOT perform abdominal thrusts on infants under 1 year",
+      "Do NOT do blind finger sweeps in the mouth",
+      "Do NOT give water or food"
+    ],
+    "urgent": "If the airway is not cleared after back blows and thrusts, call for emergency help immediately."
+  },
+  {
+    "id": 4,
+    "category": "Fainting",
+    "icon": "😵",
+    "color": "#8b5cf6",
+    "signs": [
+      "Sudden loss of consciousness",
+      "Pale, sweaty skin before fainting",
+      "Weak pulse"
+    ],
+    "dos": [
+      "Lay the person flat on their back",
+      "Raise their legs 30 cm above heart level if possible",
+      "Loosen tight clothing around neck and waist",
+      "Fan them and speak calmly when they regain consciousness"
+    ],
+    "donts": [
+      "Do NOT give water or food until fully conscious",
+      "Do NOT leave them alone",
+      "Do NOT sit them up too quickly"
+    ],
+    "urgent": "Seek care if the person does not regain consciousness within 1–2 minutes, or if they have chest pain, difficulty breathing, or seizures."
+  },
+  {
+    "id": 5,
+    "category": "Snake Bite",
+    "icon": "🐍",
+    "color": "#16a34a",
+    "signs": [
+      "Visible fang marks",
+      "Swelling or bruising around bite",
+      "Nausea, dizziness, or difficulty breathing"
+    ],
+    "dos": [
+      "Keep the person still and calm — movement spreads venom faster",
+      "Immobilize the bitten limb at or below heart level",
+      "Remove watches, rings, or tight clothing near the bite",
+      "Get to a hospital or clinic as fast as possible with antivenom"
+    ],
+    "donts": [
+      "Do NOT cut the wound or try to suck out venom",
+      "Do NOT apply ice or tourniquet",
+      "Do NOT give alcohol or food",
+      "Do NOT try to catch the snake"
+    ],
+    "urgent": "ALL snake bites should be treated as medical emergencies. Reach a health facility with antivenom immediately."
+  },
+  {
+    "id": 6,
+    "category": "Dehydration",
+    "icon": "💧",
+    "color": "#0ea5e9",
+    "signs": [
+      "Extreme thirst and dry mouth",
+      "No urination for 8+ hours",
+      "Sunken eyes, dizziness, rapid heartbeat"
+    ],
+    "dos": [
+      "Give Oral Rehydration Solution (ORS) in small sips — frequently",
+      "If no ORS: mix 1 liter water + 6 teaspoons sugar + ½ teaspoon salt",
+      "Keep giving fluids even if person vomits — small amounts often",
+      "For infants: continue breastfeeding plus ORS"
+    ],
+    "donts": [
+      "Do NOT give only plain water in severe cases (lacks salts)",
+      "Do NOT give sugary sodas or juice as replacement",
+      "Do NOT ignore dehydration in children — it worsens fast"
+    ],
+    "urgent": "Seek clinic care urgently if the person cannot keep fluids down, is unconscious, has sunken fontanelle (infants), or has no urine output for 8+ hours."
+  },
+  {
+    "id": 7,
+    "category": "Seizures",
+    "icon": "⚡",
+    "color": "#7c3aed",
+    "signs": [
+      "Sudden loss of consciousness with convulsions",
+      "Uncontrolled shaking or stiffening",
+      "Confusion or drowsiness after the episode"
+    ],
+    "dos": [
+      "Time the seizure — note when it starts",
+      "Protect the head with soft padding underneath",
+      "Gently turn the person on their side (recovery position) after convulsions stop",
+      "Stay with them until fully alert"
+    ],
+    "donts": [
+      "Do NOT restrain the person or hold them down",
+      "Do NOT put anything in their mouth",
+      "Do NOT give water or food during or immediately after"
+    ],
+    "urgent": "Call for help if: seizure lasts more than 5 minutes, person doesn't regain consciousness, this is a first-ever seizure, or they are injured."
+  },
+  {
+    "id": 8,
+    "category": "Heat Stroke",
+    "icon": "☀️",
+    "color": "#f59e0b",
+    "signs": [
+      "Body temperature above 40°C (104°F)",
+      "Hot, dry skin (stopped sweating)",
+      "Confusion, slurred speech, or unconsciousness"
+    ],
+    "dos": [
+      "Move them to shade or a cool environment immediately",
+      "Cool the body rapidly — wet cloths on neck, armpits, groin",
+      "Fan the person vigorously while applying cool water",
+      "Give cool water if they are conscious and can swallow"
+    ],
+    "donts": [
+      "Do NOT give aspirin or paracetamol (won't help heat stroke)",
+      "Do NOT leave the person in the sun or hot space",
+      "Do NOT give fluids if unconscious — risk of choking"
+    ],
+    "urgent": "Heat stroke is a life-threatening emergency. Seek hospital care immediately while cooling the person."
+  }
+]

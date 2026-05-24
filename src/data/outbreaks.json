@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "region": "Kigali",
+    "disease": "Malaria",
+    "severity": "High",
+    "cases": 342,
+    "trend": "↑",
+    "color": "#ef4444",
+    "advice": "Use insecticide-treated mosquito nets every night. Seek testing immediately if fever persists beyond 24 hours. Avoid stagnant water near your home.",
+    "action": "Seek testing if symptomatic"
+  },
+  {
+    "id": 2,
+    "region": "Kampala",
+    "disease": "Cholera",
+    "severity": "Medium",
+    "cases": 89,
+    "trend": "→",
+    "color": "#f59e0b",
+    "advice": "Drink only boiled or treated water. Wash hands frequently with soap. Avoid raw or undercooked foods from unknown sources.",
+    "action": "Ensure clean water access"
+  },
+  {
+    "id": 3,
+    "region": "Nairobi East",
+    "disease": "Dengue Fever",
+    "severity": "High",
+    "cases": 215,
+    "trend": "↑",
+    "color": "#ef4444",
+    "advice": "Eliminate standing water where mosquitoes breed. Use repellent and wear long sleeves. Seek care immediately for high fever with severe headache.",
+    "action": "Visit clinic if fever develops"
+  },
+  {
+    "id": 4,
+    "region": "Dar es Salaam",
+    "disease": "Typhoid",
+    "severity": "Low",
+    "cases": 34,
+    "trend": "↓",
+    "color": "#22c55e",
+    "advice": "Typhoid spreads through contaminated food and water. Vaccination is available. Practice strict hand hygiene before eating.",
+    "action": "Vaccination recommended"
+  },
+  {
+    "id": 5,
+    "region": "Addis Ababa",
+    "disease": "Influenza",
+    "severity": "Medium",
+    "cases": 567,
+    "trend": "↑",
+    "color": "#f59e0b",
+    "advice": "Annual flu vaccine is the best protection. Rest, hydrate, and isolate if symptomatic. High-risk individuals should seek care early.",
+    "action": "Vaccinate & isolate if sick"
+  },
+  {
+    "id": 6,
+    "region": "Lagos North",
+    "disease": "Measles",
+    "severity": "High",
+    "cases": 128,
+    "trend": "↑",
+    "color": "#ef4444",
+    "advice": "Ensure children are vaccinated (MMR). Isolate confirmed cases immediately. Report suspected cases to local health authorities.",
+    "action": "Urgent — check vaccination status"
+  }
+]

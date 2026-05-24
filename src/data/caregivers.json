@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "name": "Kigali Community Health Center",
+    "type": "Clinic",
+    "services": ["General Consultation", "Malaria Testing", "Maternal Care", "Vaccinations"],
+    "phone": "+250 788 000 111",
+    "region": "Kigali, Rwanda",
+    "availability": "Mon–Sat, 7am–6pm",
+    "distance": "2.1 km",
+    "emergency": false
+  },
+  {
+    "id": 2,
+    "name": "MSF Mobile Medical Unit",
+    "type": "NGO",
+    "services": ["Emergency Care", "Surgical Support", "Mental Health", "HIV/TB Programs"],
+    "phone": "+254 700 123 456",
+    "region": "East Africa Region",
+    "availability": "24/7 Emergency Line",
+    "distance": "Contact for location",
+    "emergency": true
+  },
+  {
+    "id": 3,
+    "name": "Amara Community Health Worker",
+    "type": "CHW",
+    "services": ["Home Visits", "Prenatal Support", "Child Nutrition", "Referral Guidance"],
+    "phone": "+250 722 456 789",
+    "region": "Gasabo District",
+    "availability": "Daily, 8am–5pm",
+    "distance": "0.8 km",
+    "emergency": false
+  },
+  {
+    "id": 4,
+    "name": "Rwanda Biomedical Center Hotline",
+    "type": "Hotline",
+    "services": ["Health Guidance", "Outbreak Reporting", "Mental Health Support", "COVID-19 Info"],
+    "phone": "114 (Toll-free)",
+    "region": "Nationwide Rwanda",
+    "availability": "24/7",
+    "distance": "Phone only",
+    "emergency": true
+  },
+  {
+    "id": 5,
+    "name": "Partners in Health Clinic",
+    "type": "Clinic",
+    "services": ["Chronic Disease Care", "Surgery", "Cancer Screening", "Pediatrics"],
+    "phone": "+250 788 302 100",
+    "region": "Rwinkwavu, Rwanda",
+    "availability": "Mon–Fri, 8am–4pm",
+    "distance": "34 km",
+    "emergency": false
+  },
+  {
+    "id": 6,
+    "name": "UNICEF Child Health Program",
+    "type": "NGO",
+    "services": ["Child Immunization", "Nutrition Screening", "Water & Sanitation", "Emergency Relief"],
+    "phone": "+254 20 762 1234",
+    "region": "Multi-country",
+    "availability": "Business hours",
+    "distance": "Regional office",
+    "emergency": false
+  }
+]
