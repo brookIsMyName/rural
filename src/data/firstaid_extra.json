@@ -1,0 +1,58 @@
+[
+  {
+    "id": 9, "category": "Drowning", "icon": "🌊", "color": "#0ea5e9",
+    "signs": ["Unconscious or unresponsive after water submersion", "Not breathing or gasping", "Blue lips or fingertips"],
+    "dos": ["Call for emergency help immediately", "Remove person from water safely", "Begin CPR immediately if not breathing — 30 chest compressions then 2 rescue breaths", "Keep them warm with a blanket after rescue", "Place in recovery position if breathing returns"],
+    "donts": ["Do NOT waste time trying to drain water before CPR", "Do NOT leave them alone even if conscious", "Do NOT give food or drink"],
+    "urgent": "All drowning victims need emergency care even if they seem fine — delayed complications can be fatal."
+  },
+  {
+    "id": 10, "category": "Eye Injury", "icon": "👁️", "color": "#8b5cf6",
+    "signs": ["Pain, redness or swelling in the eye", "Visible object embedded in eye", "Sudden loss of vision or blurred vision"],
+    "dos": ["For chemical splash: flush with clean water for 15–20 minutes continuously", "For foreign object: blink rapidly to try to dislodge it naturally", "Cover the eye loosely with a clean cloth", "Keep the person calm and still"],
+    "donts": ["Do NOT rub the eye", "Do NOT try to remove an embedded object", "Do NOT use cotton wool directly on the eyeball", "Do NOT delay seeking care for any eye injury"],
+    "urgent": "All serious eye injuries require urgent medical care. Vision loss can be permanent if treatment is delayed."
+  },
+  {
+    "id": 11, "category": "Allergic Reaction", "icon": "⚠️", "color": "#f97316",
+    "signs": ["Sudden swelling of face, lips, or throat", "Difficulty breathing or swallowing", "Skin rash, hives, or extreme itching", "Rapid heartbeat and dizziness"],
+    "dos": ["If prescribed: use epinephrine (EpiPen) immediately", "Lay person flat with legs raised (unless breathing is difficult)", "Call for emergency help immediately for severe reactions", "Keep them calm and still", "Loosen tight clothing"],
+    "donts": ["Do NOT give food or drink", "Do NOT leave them alone", "Do NOT assume mild reactions won't worsen — they can rapidly"],
+    "urgent": "Anaphylaxis (severe allergic reaction) is life-threatening. Seek emergency care immediately even if symptoms seem to improve."
+  },
+  {
+    "id": 12, "category": "Diabetic Emergency", "icon": "🩸", "color": "#10b981",
+    "signs": ["Sudden confusion, shakiness, or sweating (low blood sugar)", "Unconsciousness in known diabetic", "Sweet or fruity breath odor (high blood sugar)", "Rapid breathing with nausea"],
+    "dos": ["If conscious and low blood sugar suspected: give sugary drink, juice, or glucose tablets", "Have them rest and check blood sugar if meter available", "If unconscious: place in recovery position, do not give anything by mouth", "Call for help immediately if unconscious"],
+    "donts": ["Do NOT give sugar if person is unconscious — choking risk", "Do NOT leave them alone", "Do NOT assume it will resolve on its own if unconscious"],
+    "urgent": "Seek urgent care if person is unconscious, confused, or does not improve within 15 minutes of sugar intake."
+  },
+  {
+    "id": 13, "category": "Chest Pain", "icon": "❤️", "color": "#ef4444",
+    "signs": ["Pressure, squeezing, or tightness in chest", "Pain spreading to arm, jaw, neck, or back", "Shortness of breath with sweating", "Nausea or lightheadedness"],
+    "dos": ["Call for emergency help immediately", "Have person sit or lie in most comfortable position", "Loosen tight clothing", "If aspirin available and person not allergic: give one adult aspirin (325mg) to chew", "Begin CPR if person becomes unresponsive and not breathing normally"],
+    "donts": ["Do NOT leave the person alone", "Do NOT let them walk around or exert themselves", "Do NOT give aspirin if allergic or if stomach bleeding is suspected"],
+    "urgent": "Any chest pain is a potential heart attack. Treat as emergency and seek immediate care — time is critical."
+  },
+  {
+    "id": 14, "category": "Head Injury", "icon": "🧠", "color": "#7c3aed",
+    "signs": ["Loss of consciousness even briefly", "Confusion, memory loss, or disorientation", "Severe headache after impact", "Vomiting after head trauma", "Unequal pupil sizes"],
+    "dos": ["Keep person still — do not move if spinal injury possible", "Monitor breathing and consciousness continuously", "Apply gentle pressure with clean cloth if bleeding from scalp", "Keep awake and talking if conscious", "Place in recovery position if unconscious and breathing"],
+    "donts": ["Do NOT remove helmet if wearing one (let medical staff do it)", "Do NOT give pain medication without medical advice", "Do NOT let them sleep unmonitored for first few hours", "Do NOT allow return to activity even if they feel fine"],
+    "urgent": "Any loss of consciousness, worsening headache, vomiting, or confusion after head injury requires immediate emergency care."
+  },
+  {
+    "id": 15, "category": "Poisoning", "icon": "☠️", "color": "#6b7280",
+    "signs": ["Nausea, vomiting, or stomach cramps after ingesting unknown substance", "Confusion or loss of consciousness", "Burns or stains around mouth", "Difficulty breathing or seizures"],
+    "dos": ["Call poison control or emergency services immediately", "Keep the person calm and still", "Note what was ingested, when, and how much if known", "If chemical on skin: remove clothing and rinse skin with water for 20 minutes", "Keep any containers or packaging to show medical staff"],
+    "donts": ["Do NOT induce vomiting unless specifically instructed by poison control", "Do NOT give milk or water unless advised", "Do NOT wait for symptoms to worsen before seeking help"],
+    "urgent": "All suspected poisonings require immediate medical attention. Do not wait."
+  },
+  {
+    "id": 16, "category": "Broken Bone / Fracture", "icon": "🦴", "color": "#94a3b8",
+    "signs": ["Deformity or unnatural angle of limb", "Severe pain and swelling", "Inability to move the injured area", "Bone visible through skin (open fracture)"],
+    "dos": ["Immobilize the injured area — do not try to straighten it", "Make a splint using stiff material (stick, rolled newspaper) padded with cloth", "Apply ice wrapped in cloth to reduce swelling", "Elevate if possible", "Seek medical care — all fractures need professional treatment"],
+    "donts": ["Do NOT try to realign the bone", "Do NOT apply tight bandages that cut off circulation", "Do NOT move an injured spine — call for help", "Do NOT walk on a suspected broken leg or foot"],
+    "urgent": "Open fractures (bone through skin), suspected spine injuries, and any fracture with loss of sensation require immediate emergency care."
+  }
+]

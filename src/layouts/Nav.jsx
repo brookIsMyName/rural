@@ -10,6 +10,7 @@ const links = [
   { id: "outbreaks",  key: "alerts" },
   { id: "firstaid",   key: "firstAid" },
   { id: "caregivers", key: "findCare" },
+  {id: "bodymap", key: "bodyMap"},
 ];
 
 export default function Nav({ page, setPage, user, onLogout, goToChat }) {

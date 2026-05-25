@@ -8,22 +8,38 @@ import FirstAidPage   from "./pages/FirstAidPage";
 import CaregiversPage from "./pages/CaregiversPage";
 import LoginPage      from "./pages/LoginPage";
 import RegisterPage   from "./pages/RegisterPage";
+import BodyMap from "./pages/BodyMap";
+import { resolveLocation } from "./utils/useLocation";
 import "./index.css";
 
 export default function App() {
   const [page, setPage] = useState("home");
   const [user, setUser] = useState(null);
 
-  // Restore session on load
+  
+  // Restore session
   useEffect(() => {
     const stored = localStorage.getItem("rc_user");
     const token  = localStorage.getItem("rc_token");
     if (stored && token) {
-      try { setUser(JSON.parse(stored)); } catch {}
+      try {
+        const u = JSON.parse(stored);
+        setUser(u);
+        // Resolve location silently on load — IP fallback first, no prompt
+        resolveLocation(u).then((loc) => {
+          if (loc) {
+            // Update user object in memory with location so pages can read it
+            setUser((prev) => prev ? { ...prev, location: loc } : prev);
+          }
+        });
+      } catch {}
+    } else {
+      // Not logged in — still try IP location silently
+      resolveLocation(null).catch(() => {});
     }
   }, []);
 
-  // Handle Google OAuth callback hash
+  // Handle Google OAuth callback
   useEffect(() => {
     if (window.location.pathname === "/auth/callback") {
       const hash   = window.location.hash.slice(1);
@@ -43,7 +59,15 @@ export default function App() {
     }
   }, []);
 
-  const handleLogin  = (u) => { setUser(u); setPage("home"); };
+  const handleLogin = (u) => {
+    setUser(u);
+    // Resolve location after login — use saved location from server first
+    resolveLocation(u).then((loc) => {
+      if (loc) setUser((prev) => prev ? { ...prev, location: loc } : prev);
+    });
+    setPage("home");
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("rc_token");
     localStorage.removeItem("rc_user");
@@ -63,14 +87,18 @@ export default function App() {
       {page !== "login" && page !== "register" && (
         <Nav page={page} setPage={setPage} user={user} onLogout={handleLogout} goToChat={goToChat} />
       )}
-
+      {
+  page === "bodymap" && (
+    <BodyMap />
+  )
+}
       {page === "login"      && <LoginPage    setPage={setPage} onLogin={handleLogin} />}
       {page === "register"   && <RegisterPage setPage={setPage} onLogin={handleLogin} />}
       {page === "home"       && <HomePage     setPage={setPage} goToChat={goToChat} />}
       {page === "chat"       && <ChatPage     user={user} />}
-      {page === "outbreaks"  && <OutbreaksPage />}
+      {page === "outbreaks"  && <OutbreaksPage user={user} />}
       {page === "firstaid"   && <FirstAidPage />}
-      {page === "caregivers" && <CaregiversPage />}
+      {page === "caregivers" && <CaregiversPage user={user} />}
     </div>
   );
 }
