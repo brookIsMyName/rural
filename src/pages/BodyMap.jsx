@@ -1,415 +1,315 @@
 import { useState } from "react";
+import { bodyRegions } from "../data/bodyMapData";
 
-import {
-  FRONT_POINTS,
-  BACK_POINTS,
-} from "../data/bodyMapData";
+export default function BodyMap() {
+  const [selectedParts, setSelectedParts] =
+    useState([]);
 
-export default function BodyMap({
-  onSubmit,
-  isMobile,
-}) {
-  const [view, setView] = useState("front");
+  const [hoveredPart, setHoveredPart] =
+    useState(null);
 
-  const [selected, setSelected] = useState([]);
+  const [severityMap, setSeverityMap] =
+    useState({});
 
-  const [severity, setSeverity] = useState(5);
+  const [notesMap, setNotesMap] =
+    useState({});
 
-  const [duration, setDuration] =
-    useState("");
+  const togglePart = (part) => {
+    setSelectedParts((prev) => {
+      if (prev.includes(part)) {
+        return prev.filter((p) => p !== part);
+      }
 
-  const [feeling, setFeeling] =
-    useState("");
-
-  const points =
-    view === "front"
-      ? FRONT_POINTS
-      : BACK_POINTS;
-
-  const togglePoint = (point) => {
-    const exists = selected.find(
-      (p) => p.id === point.id
-    );
-
-    if (exists) {
-      setSelected((prev) =>
-        prev.filter((p) => p.id !== point.id)
-      );
-    } else {
-      setSelected((prev) => [
-        ...prev,
-        point,
-      ]);
-    }
+      return [...prev, part];
+    });
   };
 
-  const sendBodyReport = () => {
-    if (selected.length === 0) return;
+  const updateSeverity = (part, value) => {
+    setSeverityMap((prev) => ({
+      ...prev,
+      [part]: value,
+    }));
+  };
 
-    const bodySummary = `
-BODY MAP REPORT
+  const updateNotes = (part, value) => {
+    setNotesMap((prev) => ({
+      ...prev,
+      [part]: value,
+    }));
+  };
 
-Pain Areas:
-${selected.map((p) => `- ${p.label}`).join("\n")}
+  const submitSymptoms = async () => {
+    const payload = {
+      symptoms: selectedParts.map((part) => ({
+        bodyPart: part,
+        severity: severityMap[part] || 1,
+        notes: notesMap[part] || "",
+      })),
+    };
 
-Pain Severity:
-${severity}/10
+    try {
+      const res = await fetch(
+        "http://localhost:5000/api/symptoms",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
-Duration:
-${duration || "Not specified"}
+      const data = await res.json();
 
-Feeling:
-${feeling || "Not specified"}
+      console.log(data);
 
-The user selected these body areas visually on the body map.
-`;
+      alert("Symptoms submitted");
+    } catch (err) {
+      console.error(err);
 
-    onSubmit(bodySummary);
-
-    setSelected([]);
-    setSeverity(5);
-    setDuration("");
-    setFeeling("");
+      alert("Submission failed");
+    }
   };
 
   return (
     <div
       style={{
-        background:
-          "rgba(255,255,255,0.04)",
-        border:
-          "1px solid rgba(255,255,255,0.08)",
-        borderRadius: 20,
-        padding: 18,
-        marginBottom: 16,
+        minHeight: "100vh",
+        background: "#07110f",
+        color: "#fff",
+        paddingTop: 90,
+        paddingBottom: 40,
+        paddingLeft: 20,
+        paddingRight: 20,
       }}
     >
-      {/* HEADER */}
-
       <div
         style={{
-          display: "flex",
-          justifyContent:
-            "space-between",
-          alignItems: "center",
-          marginBottom: 18,
-          flexWrap: "wrap",
-          gap: 10,
+          maxWidth: 1200,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns:
+            "minmax(320px,450px) 1fr",
+          gap: 30,
         }}
       >
-        <div>
-          <h3
+        {/* BODY */}
+
+        <div
+          style={{
+            background:
+              "rgba(255,255,255,0.04)",
+            border:
+              "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 24,
+            padding: 20,
+            height: "fit-content",
+          }}
+        >
+          <h2
             style={{
-              color: "#fff",
-              fontSize: 18,
-              marginBottom: 4,
+              marginTop: 0,
+              marginBottom: 20,
+              fontSize: 28,
             }}
           >
             Symptom Body Map
-          </h3>
+          </h2>
 
-          <p
-            style={{
-              color:
-                "rgba(255,255,255,0.5)",
-              fontSize: 13,
-            }}
-          >
-            Tap where you feel pain or
-            discomfort
-          </p>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            gap: 8,
-          }}
-        >
-          <button
-            onClick={() =>
-              setView("front")
-            }
-            style={{
-              background:
-                view === "front"
-                  ? "#10b981"
-                  : "rgba(255,255,255,0.08)",
-
-              border: "none",
-              color: "#fff",
-              padding: "8px 14px",
-              borderRadius: 10,
-              cursor: "pointer",
-            }}
-          >
-            Front
-          </button>
-
-          <button
-            onClick={() =>
-              setView("back")
-            }
-            style={{
-              background:
-                view === "back"
-                  ? "#10b981"
-                  : "rgba(255,255,255,0.08)",
-
-              border: "none",
-              color: "#fff",
-              padding: "8px 14px",
-              borderRadius: 10,
-              cursor: "pointer",
-            }}
-          >
-            Back
-          </button>
-        </div>
-      </div>
-
-      {/* BODY SVG */}
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: 20,
-        }}
-      >
-        <svg
-          width={isMobile ? 180 : 240}
-          height={isMobile ? 420 : 500}
-          viewBox="0 0 200 450"
-        >
-          {/* BODY */}
-
-          <circle
-            cx="100"
-            cy="40"
-            r="25"
-            fill="rgba(255,255,255,0.08)"
-          />
-
-          <rect
-            x="70"
-            y="70"
-            width="60"
-            height="130"
-            rx="30"
-            fill="rgba(255,255,255,0.08)"
-          />
-
-          <rect
-            x="45"
-            y="75"
-            width="20"
-            height="120"
-            rx="10"
-            fill="rgba(255,255,255,0.08)"
-          />
-
-          <rect
-            x="135"
-            y="75"
-            width="20"
-            height="120"
-            rx="10"
-            fill="rgba(255,255,255,0.08)"
-          />
-
-          <rect
-            x="75"
-            y="200"
-            width="20"
-            height="160"
-            rx="10"
-            fill="rgba(255,255,255,0.08)"
-          />
-
-          <rect
-            x="105"
-            y="200"
-            width="20"
-            height="160"
-            rx="10"
-            fill="rgba(255,255,255,0.08)"
-          />
-
-          {/* POINTS */}
-
-          {points.map((point) => {
-            const active =
-              selected.find(
-                (p) => p.id === point.id
-              );
-
-            return (
-              <g key={point.id}>
-                {active && (
-                  <circle
-                    cx={point.x}
-                    cy={point.y}
-                    r="18"
-                    fill="rgba(239,68,68,0.2)"
-                  />
-                )}
-
-                <circle
-                  cx={point.x}
-                  cy={point.y}
-                  r={active ? 10 : 7}
-                  fill={
-                    active
-                      ? "#ef4444"
-                      : "#10b981"
-                  }
-                  stroke="#fff"
-                  strokeWidth="2"
-                  style={{
-                    cursor: "pointer",
-                    transition: "0.2s",
-                  }}
-                  onClick={() =>
-                    togglePoint(point)
-                  }
-                />
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-
-      {/* SELECTED */}
-
-      {selected.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 8,
-            marginBottom: 18,
-          }}
-        >
-          {selected.map((s) => (
-            <div
-              key={s.id}
-              style={{
-                background:
-                  "rgba(239,68,68,0.12)",
-                border:
-                  "1px solid rgba(239,68,68,0.25)",
-                color: "#fff",
-                borderRadius: 999,
-                padding: "6px 12px",
-                fontSize: 12,
-              }}
-            >
-              {s.label}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* DETAILS */}
-
-      <div
-        style={{
-          display: "grid",
-          gap: 14,
-        }}
-      >
-        <div>
-          <label
-            style={{
-              color: "#fff",
-              fontSize: 13,
-              display: "block",
-              marginBottom: 8,
-            }}
-          >
-            Pain Severity ({severity}/10)
-          </label>
-
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={severity}
-            onChange={(e) =>
-              setSeverity(e.target.value)
-            }
+          <svg
+            viewBox="0 0 400 600"
             style={{
               width: "100%",
+              height: "auto",
             }}
-          />
+          >
+            {bodyRegions.map((region) => {
+              const selected =
+                selectedParts.includes(
+                  region.id
+                );
+
+              const hovered =
+                hoveredPart === region.id;
+
+              return (
+                <path
+                  key={region.id}
+                  d={region.path}
+                  onClick={() =>
+                    togglePart(region.id)
+                  }
+                  onMouseEnter={() =>
+                    setHoveredPart(region.id)
+                  }
+                  onMouseLeave={() =>
+                    setHoveredPart(null)
+                  }
+                  style={{
+                    fill: selected
+                      ? "#10b981"
+                      : hovered
+                      ? "#0ea5e9"
+                      : "rgba(255,255,255,0.08)",
+
+                    stroke: selected
+                      ? "#34d399"
+                      : "rgba(255,255,255,0.2)",
+
+                    strokeWidth: 2,
+
+                    cursor: "pointer",
+
+                    transition: "0.2s",
+                  }}
+                />
+              );
+            })}
+          </svg>
         </div>
 
-        <input
-          value={duration}
-          onChange={(e) =>
-            setDuration(e.target.value)
-          }
-          placeholder="How long have you felt this?"
+        {/* PANEL */}
+
+        <div
           style={{
-            background:
-              "rgba(255,255,255,0.05)",
-            border:
-              "1px solid rgba(255,255,255,0.1)",
-            borderRadius: 12,
-            padding: "12px",
-            color: "#fff",
-            outline: "none",
-          }}
-        />
-
-        <textarea
-          value={feeling}
-          onChange={(e) =>
-            setFeeling(e.target.value)
-          }
-          placeholder="Describe the feeling (burning, sharp pain, numbness, pressure...)"
-          rows={3}
-          style={{
-            background:
-              "rgba(255,255,255,0.05)",
-            border:
-              "1px solid rgba(255,255,255,0.1)",
-            borderRadius: 12,
-            padding: "12px",
-            color: "#fff",
-            outline: "none",
-            resize: "vertical",
-          }}
-        />
-
-        <button
-          onClick={sendBodyReport}
-          disabled={selected.length === 0}
-          style={{
-            background:
-              selected.length === 0
-                ? "rgba(16,185,129,0.2)"
-                : "linear-gradient(135deg,#10b981,#059669)",
-
-            border: "none",
-
-            borderRadius: 14,
-
-            padding: "14px",
-
-            color: "#fff",
-
-            fontWeight: 700,
-
-            cursor:
-              selected.length === 0
-                ? "not-allowed"
-                : "pointer",
+            display: "flex",
+            flexDirection: "column",
+            gap: 18,
           }}
         >
-          Send Symptom Report
-        </button>
+          <div
+            style={{
+              background:
+                "rgba(255,255,255,0.04)",
+              border:
+                "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 24,
+              padding: 24,
+            }}
+          >
+            <h2
+              style={{
+                marginTop: 0,
+              }}
+            >
+              Selected Symptoms
+            </h2>
+
+            {selectedParts.length === 0 && (
+              <p
+                style={{
+                  color:
+                    "rgba(255,255,255,0.5)",
+                }}
+              >
+                Tap body regions to begin.
+              </p>
+            )}
+
+            {selectedParts.map((part) => (
+              <div
+                key={part}
+                style={{
+                  marginBottom: 24,
+                  paddingBottom: 24,
+                  borderBottom:
+                    "1px solid rgba(255,255,255,0.08)",
+                }}
+              >
+                <h3
+                  style={{
+                    textTransform:
+                      "capitalize",
+                  }}
+                >
+                  {part.replace("-", " ")}
+                </h3>
+
+                <div
+                  style={{
+                    marginTop: 10,
+                  }}
+                >
+                  <label>
+                    Severity:
+                  </label>
+
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={
+                      severityMap[part] ||
+                      1
+                    }
+                    onChange={(e) =>
+                      updateSeverity(
+                        part,
+                        e.target.value
+                      )
+                    }
+                    style={{
+                      width: "100%",
+                    }}
+                  />
+
+                  <div>
+                    Level:{" "}
+                    {severityMap[part] ||
+                      1}
+                  </div>
+                </div>
+
+                <textarea
+                  placeholder="Describe symptoms..."
+                  value={
+                    notesMap[part] || ""
+                  }
+                  onChange={(e) =>
+                    updateNotes(
+                      part,
+                      e.target.value
+                    )
+                  }
+                  style={{
+                    width: "100%",
+                    marginTop: 14,
+                    minHeight: 90,
+                    borderRadius: 14,
+                    border:
+                      "1px solid rgba(255,255,255,0.1)",
+                    background:
+                      "rgba(255,255,255,0.04)",
+                    color: "#fff",
+                    padding: 14,
+                    resize: "vertical",
+                  }}
+                />
+              </div>
+            ))}
+
+            {selectedParts.length > 0 && (
+              <button
+                onClick={submitSymptoms}
+                style={{
+                  width: "100%",
+                  height: 52,
+                  border: "none",
+                  borderRadius: 16,
+                  background:
+                    "linear-gradient(135deg,#10b981,#059669)",
+                  color: "#fff",
+                  fontSize: 16,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
+              >
+                Submit Symptoms
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

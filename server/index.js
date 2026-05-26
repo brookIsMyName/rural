@@ -19,9 +19,9 @@ import { initGoogleStrategy } from "./config/passport.js";
 import authRoutes from "./routes/auth.js";
 import locationRoutes from "./routes/location.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import symptomRoutes from "./routes/symptomRoutes.js";
 
 initGoogleStrategy();
-
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -34,6 +34,7 @@ app.use(
   })
 );
 
+app.use("/api/symptoms", symptomRoutes);
 /* -------------------- JSON -------------------- */
 app.use(express.json());
 

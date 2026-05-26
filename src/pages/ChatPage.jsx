@@ -527,7 +527,7 @@ if (!conversationId) {
             ☰
           </button>
 
-          <div>
+          <div style={{margin: "auto"}}>
             <h1
               style={{
                 fontFamily:
@@ -535,6 +535,7 @@ if (!conversationId) {
                 color: "#fff",
                 fontSize: "clamp(22px,3vw,28px)",
                 margin: 0,
+                textAlign: "center",
               }}
             >
               {t("aiHealthChat")}
@@ -556,7 +557,7 @@ if (!conversationId) {
 
         {/* USER */}
 
-        {user && (
+        {/* {user && (
           <div
             style={{
               padding: "0 24px 10px",
@@ -569,22 +570,37 @@ if (!conversationId) {
             Signed in as{" "}
             {user.name?.split(" ")[0]}
           </div>
-        )}
+        )} */}
 
         {/* MESSAGES */}
 
-        <div
-          style={{
-            flex: 1,
-            overflowY: "auto",
-            padding: isMobile
-  ? "10px 12px 16px"
-  : "10px 24px 16px",
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-          }}
-        >
+      {/* MESSAGES */}
+
+<div
+  style={{
+    flex: 1,
+    overflowY: "auto",
+
+    display: "flex",
+    justifyContent: "center",
+
+    padding: isMobile
+      ? "10px 10px 16px"
+      : "16px 20px 20px",
+  }}
+>
+  <div
+    style={{
+      width: "100%",
+      maxWidth: sidebarOpen
+        ? 760
+        : 860,
+
+      display: "flex",
+      flexDirection: "column",
+      gap: 18,
+    }}
+  >
           {messages.map((m, i) => (
             <div
               key={i}
@@ -619,7 +635,7 @@ if (!conversationId) {
 
               <div
                 style={{
-                  maxWidth: isMobile ? "88%" : "78%",
+                 maxWidth: isMobile ? "92%" : "72%",
                   wordBreak: "break-word",
                   overflowWrap: "break-word",
                   display: "flex",
@@ -649,7 +665,8 @@ if (!conversationId) {
                     fontFamily:
                       "'DM Sans',sans-serif",
                     fontSize: 14,
-                    lineHeight: 1.7,
+                    lineHeight: 1.6,
+                    letterSpacing: "0.1px",
                     whiteSpace: "pre-wrap",
                   }}
                 >
@@ -749,10 +766,9 @@ if (!conversationId) {
             </div>
           )}
 
-          <div ref={bottomRef} />
-        </div>
-
-        
+       <div ref={bottomRef} />
+  </div>
+</div>
         {/* QUICK PROMPTS */}
 
         {messages.length <= 1 && (

@@ -1,147 +1,843 @@
 // src/layouts/Nav.jsx
-import { useState } from "react";
+
+import { useState, useRef, useEffect } from "react";
 import { useLang } from "../utils/useLang";
 import { t } from "../utils/translate";
 import { LANGUAGES } from "../data/languages";
 
-const links = [
-  { id: "home",       key: "home" },
-  { id: "chat",       key: "healthChat" },
-  { id: "outbreaks",  key: "alerts" },
-  { id: "firstaid",   key: "firstAid" },
-  { id: "caregivers", key: "findCare" },
-  {id: "bodymap", key: "bodyMap"},
-];
+export default function Nav({
+  page,
+  setPage,
+  user,
+  onLogout,
+  goToChat,
+}) {
+  const [menuOpen, setMenuOpen] =
+    useState(false);
 
-export default function Nav({ page, setPage, user, onLogout, goToChat }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const { lang, changeLang } = useLang(); // ← drives re-renders on language change
+  const [moreOpen, setMoreOpen] =
+    useState(false);
+
+  const [profileOpen, setProfileOpen] =
+    useState(false);
+
+  const { lang, changeLang } = useLang();
+
+  const moreRef = useRef(null);
+  const profileRef = useRef(null);
 
   const navigate = (id) => {
-    id === "chat" ? goToChat() : setPage(id);
+    id === "chat"
+      ? goToChat()
+      : setPage(id);
+
     setMenuOpen(false);
+    setMoreOpen(false);
   };
+
+  useEffect(() => {
+    const close = (e) => {
+      if (
+        moreRef.current &&
+        !moreRef.current.contains(e.target)
+      ) {
+        setMoreOpen(false);
+      }
+
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(e.target)
+      ) {
+        setProfileOpen(false);
+      }
+    };
+
+    window.addEventListener("click", close);
+
+    return () =>
+      window.removeEventListener(
+        "click",
+        close
+      );
+  }, []);
 
   return (
     <>
       <style>{`
-        .nav-link { transition: color 0.2s, background 0.2s; }
-        .nav-link:hover { color: #10b981 !important; background: rgba(16,185,129,0.08) !important; }
-        .lang-select option { background: #1a2030; color: #fff; }
-        .auth-btn-outline:hover { border-color: rgba(255,255,255,0.3) !important; color: #fff !important; }
-        .auth-btn-green:hover { opacity: 0.88; }
-        .hamburger:hover { color: #10b981 !important; }
-        @keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
-        .mobile-menu { animation: slideDown 0.18s ease; }
+        .nav-link {
+          transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+          color: #10b981 !important;
+          background: rgba(16,185,129,0.08) !important;
+        }
+
+        .dropdown-item:hover {
+          background: rgba(255,255,255,0.06);
+        }
+
+        .lang-select option {
+          background: #111827;
+          color: white;
+        }
+
+        @media (max-width: 900px) {
+          .desktop-only {
+            display: none !important;
+          }
+
+          .mobile-btn {
+            display: flex !important;
+          }
+        }
+
+        @media (min-width: 901px) {
+          .mobile-menu {
+            display: none !important;
+          }
+        }
       `}</style>
 
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        background: "rgba(10,14,20,0.95)", backdropFilter: "blur(16px)",
-        borderBottom: "1px solid rgba(255,255,255,0.07)",
-      }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 62, padding: "0 20px" }}>
+      <nav
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 5000,
 
-          {/* ── Logo ── */}
-          <button onClick={() => setPage("home")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
-            <div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg,#10b981,#0ea5e9)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}>🏥</div>
-            <span style={{ color: "#fff", fontFamily: "'DM Sans',sans-serif", fontWeight: 700, fontSize: 16, letterSpacing: "-0.3px", whiteSpace: "nowrap" }}>
-              RuralCare <span style={{ color: "#10b981" }}>AI</span>
-            </span>
-          </button>
+          background:
+            "rgba(10,14,20,0.92)",
 
-          {/* ── Desktop centre links ── */}
-          <div style={{ display: "flex", gap: 2, alignItems: "center" }} className="desktop-nav">
-            {links.map((l) => (
-              <button key={l.id} onClick={() => navigate(l.id)} className="nav-link" style={{
-                background: page === l.id ? "rgba(16,185,129,0.12)" : "none",
-                border: "none", borderRadius: 8, padding: "6px 13px",
-                color: page === l.id ? "#10b981" : "rgba(255,255,255,0.55)",
-                cursor: "pointer", fontSize: 13.5,
-                fontFamily: "'DM Sans',sans-serif",
-                fontWeight: page === l.id ? 600 : 400,
-              }}>
-                {t(l.key)}
+          backdropFilter: "blur(18px)",
+
+          borderBottom:
+            "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1300,
+
+            margin: "0 auto",
+
+            height: 62,
+
+            display: "flex",
+
+            alignItems: "center",
+
+            justifyContent: "space-between",
+
+            padding: "0 10px",
+          }}
+        >
+          {/* LEFT */}
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 16,
+            }}
+          >
+            {/* LOGO */}
+
+            <button
+              onClick={() =>
+                setPage("home")
+              }
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+
+                display: "flex",
+                alignItems: "center",
+
+                gap: 6,
+
+                padding: 0,
+              }}
+            >
+              <div
+                style={{
+                  width: 30,
+                  height: 30,
+
+                  borderRadius: 8,
+
+                  background:
+                    "linear-gradient(135deg,#10b981,#0ea5e9)",
+
+                  display: "flex",
+
+                  alignItems: "center",
+
+                  justifyContent:
+                    "center",
+
+                  fontSize: 15,
+                }}
+              >
+                🏥
+              </div>
+
+              <span
+                style={{
+                  color: "#fff",
+
+                  fontWeight: 700,
+
+                  fontSize: 16,
+
+                  fontFamily:
+                    "'DM Sans', sans-serif",
+
+                  whiteSpace: "nowrap",
+                }}
+              >
+                RuralCare{" "}
+                <span
+                  style={{
+                    color: "#10b981",
+                  }}
+                >
+                  AI
+                </span>
+              </span>
+            </button>
+
+            {/* DESKTOP NAV */}
+
+            <div
+              className="desktop-only"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                marginLeft: 8,
+              }}
+            >
+              <button
+                onClick={() =>
+                  navigate("home")
+                }
+                className="nav-link"
+                style={{
+                  background:
+                    page === "home"
+                      ? "rgba(16,185,129,0.12)"
+                      : "none",
+
+                  border: "none",
+
+                  color:
+                    page === "home"
+                      ? "#10b981"
+                      : "rgba(255,255,255,0.65)",
+
+                  padding:
+                    "8px 12px",
+
+                  borderRadius: 8,
+
+                  cursor: "pointer",
+
+                  fontSize: 13,
+                }}
+              >
+                {t("home")}
               </button>
-            ))}
+
+              <button
+                onClick={() =>
+                  navigate("chat")
+                }
+                className="nav-link"
+                style={{
+                  background:
+                    page === "chat"
+                      ? "rgba(16,185,129,0.12)"
+                      : "none",
+
+                  border: "none",
+
+                  color:
+                    page === "chat"
+                      ? "#10b981"
+                      : "rgba(255,255,255,0.65)",
+
+                  padding:
+                    "8px 12px",
+
+                  borderRadius: 8,
+
+                  cursor: "pointer",
+
+                  fontSize: 13,
+                }}
+              >
+                {t("healthChat")}
+              </button>
+
+              {/* MORE DROPDOWN */}
+
+              <div
+                ref={moreRef}
+                style={{
+                  position: "relative",
+                }}
+              >
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    setMoreOpen(
+                      !moreOpen
+                    );
+                  }}
+                  className="nav-link"
+                  style={{
+                    background:
+                      "none",
+
+                    border: "none",
+
+                    color:
+                      "rgba(255,255,255,0.65)",
+
+                    padding:
+                      "8px 12px",
+
+                    borderRadius: 8,
+
+                    cursor: "pointer",
+
+                    fontSize: 13,
+                  }}
+                >
+                  More ▾
+                </button>
+
+                {moreOpen && (
+                  <div
+                    style={{
+                      position:
+                        "absolute",
+
+                      top: 44,
+
+                      left: 0,
+
+                      width: 220,
+
+                      background:
+                        "#0f172a",
+
+                      border:
+                        "1px solid rgba(255,255,255,0.08)",
+
+                      borderRadius: 14,
+
+                      padding: 8,
+
+                      boxShadow:
+                        "0 10px 40px rgba(0,0,0,0.35)",
+                    }}
+                  >
+                    {[
+                      {
+                        id: "bodymap",
+                        label:
+                          t(
+                            "bodyMap"
+                          ),
+                      },
+
+                      {
+                        id: "firstaid",
+                        label:
+                          t(
+                            "firstAid"
+                          ),
+                      },
+
+                      {
+                        id: "caregivers",
+                        label:
+                          t(
+                            "findCare"
+                          ),
+                      },
+
+                      {
+                        id: "outbreaks",
+                        label:
+                          t(
+                            "alerts"
+                          ),
+                      },
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() =>
+                          navigate(
+                            item.id
+                          )
+                        }
+                        className="dropdown-item"
+                        style={{
+                          width: "100%",
+
+                          textAlign:
+                            "left",
+
+                          background:
+                            "none",
+
+                          border:
+                            "none",
+
+                          padding:
+                            "11px 12px",
+
+                          borderRadius: 10,
+
+                          color:
+                            "rgba(255,255,255,0.78)",
+
+                          cursor:
+                            "pointer",
+
+                          fontSize: 13,
+                        }}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* ── Right side: lang + auth ── */}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }} className="desktop-nav">
+          {/* RIGHT */}
 
-            {/* Language selector */}
-            <div style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "0 10px", height: 34 }}>
-              <span style={{ fontSize: 13 }}>🌍</span>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            {/* LANGUAGE */}
+
+            <div
+              className="desktop-only"
+              style={{
+                display: "flex",
+                alignItems: "center",
+
+                gap: 6,
+
+                height: 34,
+
+                borderRadius: 10,
+
+                padding: "0 10px",
+
+                background:
+                  "rgba(255,255,255,0.05)",
+
+                border:
+                  "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              🌍
+
               <select
                 value={lang}
-                onChange={(e) => changeLang(e.target.value)}
+                onChange={(e) =>
+                  changeLang(
+                    e.target.value
+                  )
+                }
                 className="lang-select"
-                style={{ background: "transparent", border: "none", color: "rgba(255,255,255,0.75)", fontSize: 12.5, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer", paddingRight: 4 }}
+                style={{
+                  background:
+                    "transparent",
+
+                  border: "none",
+
+                  outline: "none",
+
+                  color:
+                    "rgba(255,255,255,0.8)",
+
+                  cursor: "pointer",
+
+                  fontSize: 12,
+                }}
               >
                 {LANGUAGES.map((l) => (
-                  <option key={l.code} value={l.code}>{l.label}</option>
+                  <option
+                    key={l.code}
+                    value={l.code}
+                  >
+                    {l.label}
+                  </option>
                 ))}
               </select>
             </div>
 
-            {/* Auth */}
+            {/* PROFILE */}
+
             {user ? (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 10, borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
-                {user.avatar
-                  ? <img src={user.avatar} alt={user.name} style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} />
-                  : <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg,#10b981,#0ea5e9)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700 }}>{user.name?.[0]?.toUpperCase()}</div>
-                }
-                <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 12.5, fontFamily: "'DM Sans',sans-serif" }}>{user.name?.split(" ")[0]}</span>
-                <button onClick={onLogout} style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 6, padding: "4px 10px", color: "#f87171", fontSize: 12, fontFamily: "'DM Sans',sans-serif", cursor: "pointer" }}>
-                  {t("signOut")}
+              <div
+                ref={profileRef}
+                style={{
+                  position: "relative",
+                }}
+              >
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    setProfileOpen(
+                      !profileOpen
+                    );
+                  }}
+                  style={{
+                    background:
+                      "rgba(255,255,255,0.05)",
+
+                    border:
+                      "1px solid rgba(255,255,255,0.08)",
+
+                    borderRadius: 999,
+
+                    padding:
+                      "4px 10px 4px 4px",
+
+                    display: "flex",
+
+                    alignItems: "center",
+
+                    gap: 8,
+
+                    cursor: "pointer",
+                  }}
+                >
+                  {user.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      style={{
+                        width: 30,
+                        height: 30,
+
+                        borderRadius:
+                          "50%",
+
+                        objectFit:
+                          "cover",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: 30,
+                        height: 30,
+
+                        borderRadius:
+                          "50%",
+
+                        background:
+                          "linear-gradient(135deg,#10b981,#0ea5e9)",
+
+                        display: "flex",
+
+                        alignItems:
+                          "center",
+
+                        justifyContent:
+                          "center",
+
+                        color: "#fff",
+
+                        fontWeight: 700,
+
+                        fontSize: 12,
+                      }}
+                    >
+                      {user.name?.[0]?.toUpperCase()}
+                    </div>
+                  )}
+
+                  <span
+                    className="desktop-only"
+                    style={{
+                      color:
+                        "rgba(255,255,255,0.72)",
+
+                      fontSize: 13,
+                    }}
+                  >
+                    {
+                      user.name?.split(
+                        " "
+                      )[0]
+                    }
+                  </span>
                 </button>
+
+                {profileOpen && (
+                  <div
+                    style={{
+                      position:
+                        "absolute",
+
+                      top: 48,
+
+                      right: 0,
+
+                      width: 180,
+
+                      background:
+                        "#0f172a",
+
+                      border:
+                        "1px solid rgba(255,255,255,0.08)",
+
+                      borderRadius: 14,
+
+                      padding: 8,
+
+                      boxShadow:
+                        "0 10px 40px rgba(0,0,0,0.35)",
+                    }}
+                  >
+                    <button
+                      onClick={
+                        onLogout
+                      }
+                      className="dropdown-item"
+                      style={{
+                        width: "100%",
+
+                        textAlign:
+                          "left",
+
+                        background:
+                          "none",
+
+                        border:
+                          "none",
+
+                        color:
+                          "#f87171",
+
+                        padding:
+                          "12px",
+
+                        borderRadius: 10,
+
+                        cursor:
+                          "pointer",
+                      }}
+                    >
+                      {t("signOut")}
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
-              <div style={{ display: "flex", gap: 7 }}>
-                <button onClick={() => setPage("login")} className="auth-btn-outline" style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 7, padding: "5px 13px", color: "rgba(255,255,255,0.6)", fontSize: 12.5, fontFamily: "'DM Sans',sans-serif", cursor: "pointer", transition: "all 0.2s" }}>
+              <div
+                className="desktop-only"
+                style={{
+                  display: "flex",
+                  gap: 8,
+                }}
+              >
+                <button
+                  onClick={() =>
+                    setPage("login")
+                  }
+                  style={{
+                    background:
+                      "none",
+
+                    border:
+                      "1px solid rgba(255,255,255,0.12)",
+
+                    borderRadius: 8,
+
+                    padding:
+                      "7px 14px",
+
+                    color:
+                      "rgba(255,255,255,0.75)",
+
+                    cursor: "pointer",
+                  }}
+                >
                   {t("signIn")}
                 </button>
-                <button onClick={() => setPage("register")} className="auth-btn-green" style={{ background: "linear-gradient(135deg,#10b981,#059669)", border: "none", borderRadius: 7, padding: "5px 13px", color: "#fff", fontSize: 12.5, fontFamily: "'DM Sans',sans-serif", fontWeight: 600, cursor: "pointer", transition: "opacity 0.2s" }}>
+
+                <button
+                  onClick={() =>
+                    setPage(
+                      "register"
+                    )
+                  }
+                  style={{
+                    background:
+                      "linear-gradient(135deg,#10b981,#059669)",
+
+                    border: "none",
+
+                    borderRadius: 8,
+
+                    padding:
+                      "7px 14px",
+
+                    color: "#fff",
+
+                    fontWeight: 600,
+
+                    cursor: "pointer",
+                  }}
+                >
                   {t("signUp")}
                 </button>
               </div>
             )}
-          </div>
 
-          {/* ── Mobile hamburger ── */}
-          <button onClick={() => setMenuOpen(!menuOpen)} className="mobile-menu-btn hamburger" style={{ display: "none", background: "none", border: "none", color: "rgba(255,255,255,0.7)", fontSize: 22, cursor: "pointer", transition: "color 0.2s" }}>
-            {menuOpen ? "✕" : "☰"}
-          </button>
+            {/* MOBILE BUTTON */}
+
+            <button
+              className="mobile-btn"
+              onClick={() =>
+                setMenuOpen(
+                  !menuOpen
+                )
+              }
+              style={{
+                display: "none",
+
+                background:
+                  "none",
+
+                border: "none",
+
+                color:
+                  "rgba(255,255,255,0.8)",
+
+                fontSize: 22,
+
+                cursor: "pointer",
+              }}
+            >
+              {menuOpen ? "✕" : "☰"}
+            </button>
+          </div>
         </div>
 
-        {/* ── Mobile menu ── */}
+        {/* MOBILE MENU */}
+
         {menuOpen && (
-          <div className="mobile-menu" style={{ background: "rgba(10,14,20,0.98)", borderTop: "1px solid rgba(255,255,255,0.07)", padding: "12px 20px 20px" }}>
-            {links.map((l) => (
-              <button key={l.id} onClick={() => navigate(l.id)} style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", color: page === l.id ? "#10b981" : "rgba(255,255,255,0.65)", padding: "10px 0", fontSize: 15, fontFamily: "'DM Sans',sans-serif", cursor: "pointer", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                {t(l.key)}
+          <div
+            className="mobile-menu"
+            style={{
+              background:
+                "rgba(10,14,20,0.98)",
+
+              borderTop:
+                "1px solid rgba(255,255,255,0.06)",
+
+              padding: 18,
+            }}
+          >
+            {[
+              "home",
+              "chat",
+              "bodymap",
+              "firstaid",
+              "caregivers",
+              "outbreaks",
+            ].map((id) => (
+              <button
+                key={id}
+                onClick={() =>
+                  navigate(id)
+                }
+                style={{
+                  display: "block",
+
+                  width: "100%",
+
+                  textAlign: "left",
+
+                  background:
+                    "none",
+
+                  border: "none",
+
+                  color:
+                    "rgba(255,255,255,0.78)",
+
+                  padding:
+                    "12px 0",
+
+                  borderBottom:
+                    "1px solid rgba(255,255,255,0.04)",
+
+                  cursor: "pointer",
+                }}
+              >
+                {t(id)}
               </button>
             ))}
 
-            {/* Mobile lang selector */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14, padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-              <span style={{ fontSize: 14 }}>🌍</span>
-              <select value={lang} onChange={(e) => changeLang(e.target.value)} className="lang-select" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", borderRadius: 8, padding: "6px 10px", outline: "none", fontSize: 13, cursor: "pointer", width: "100%" }}>
-                {LANGUAGES.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
-              </select>
-            </div>
+            <div
+              style={{
+                marginTop: 16,
+              }}
+            >
+              <select
+                value={lang}
+                onChange={(e) =>
+                  changeLang(
+                    e.target.value
+                  )
+                }
+                style={{
+                  width: "100%",
 
-            <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
-              {user ? (
-                <button onClick={() => { onLogout(); setMenuOpen(false); }} style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, padding: "9px 18px", color: "#f87171", fontSize: 14, fontFamily: "'DM Sans',sans-serif", cursor: "pointer" }}>
-                  {t("signOut")} ({user.name?.split(" ")[0]})
-                </button>
-              ) : (
-                <>
-                  <button onClick={() => { setPage("login"); setMenuOpen(false); }} style={{ flex: 1, background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "9px", color: "#fff", fontFamily: "'DM Sans',sans-serif", cursor: "pointer" }}>{t("signIn")}</button>
-                  <button onClick={() => { setPage("register"); setMenuOpen(false); }} style={{ flex: 1, background: "linear-gradient(135deg,#10b981,#059669)", border: "none", borderRadius: 8, padding: "9px", color: "#fff", fontFamily: "'DM Sans',sans-serif", fontWeight: 600, cursor: "pointer" }}>{t("signUp")}</button>
-                </>
-              )}
+                  background:
+                    "rgba(255,255,255,0.06)",
+
+                  border:
+                    "1px solid rgba(255,255,255,0.08)",
+
+                  borderRadius: 10,
+
+                  padding: 10,
+
+                  color: "#fff",
+                }}
+              >
+                {LANGUAGES.map((l) => (
+                  <option
+                    key={l.code}
+                    value={l.code}
+                  >
+                    {l.label}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         )}
