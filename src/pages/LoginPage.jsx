@@ -39,7 +39,7 @@ export default function LoginPage({ setPage, onLogin }) {
 
   const handleGoogle = () => {
     // Redirects to backend which handles Google OAuth flow
-    `${import.meta.env.VITE_API_URL}/api/auth/google`
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
   };
 
   return (

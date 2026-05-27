@@ -23,7 +23,13 @@ initGoogleStrategy();
 const app  = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors({ origin: "https://salviahealth.vercel.app", credentials: true }));
+app.use(cors({
+  origin: [
+    "https://salviahealth.vercel.app",
+    "http://localhost:5173"
+  ],
+  credentials: true
+}));
 
 app.use("/api/symptoms",  symptomRoutes);   // before express.json() — keep as you had it
 
