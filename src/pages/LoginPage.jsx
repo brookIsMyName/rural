@@ -21,7 +21,7 @@ export default function LoginPage({ setPage, onLogin }) {
     setError("");
     setLoading(true);
     try {
-      const res  = await fetch("/api/auth/login", {
+      const res  = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ email, password }),
@@ -39,7 +39,7 @@ export default function LoginPage({ setPage, onLogin }) {
 
   const handleGoogle = () => {
     // Redirects to backend which handles Google OAuth flow
-    window.location.href = "/api/auth/google";
+    `${import.meta.env.VITE_API_URL}/api/auth/google`
   };
 
   return (
