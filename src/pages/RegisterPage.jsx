@@ -1,5 +1,6 @@
 // src/pages/RegisterPage.jsx
 import { useState } from "react";
+import { API_BASE } from "../config/api";
 
 const GOOGLE_ICON = (
   <svg width="18" height="18" viewBox="0 0 48 48">
@@ -32,7 +33,7 @@ export default function RegisterPage({ setPage, onLogin }) {
 
     setLoading(true);
     try {
-      const res  = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
+      const res  = await fetch(`${API_BASE}/api/auth/register`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ name: form.name, email: form.email, password: form.password }),
@@ -49,7 +50,7 @@ export default function RegisterPage({ setPage, onLogin }) {
   };
 
   const handleGoogle = () => {
-    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
+    window.location.href = `${API_BASE}/api/auth/google`;
   };
 
   const strength = (pw) => {

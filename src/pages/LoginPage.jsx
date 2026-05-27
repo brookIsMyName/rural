@@ -1,5 +1,6 @@
 // src/pages/LoginPage.jsx
 import { useState } from "react";
+import { API_BASE } from "../config/api";
 
 const GOOGLE_ICON = (
   <svg width="18" height="18" viewBox="0 0 48 48">
@@ -21,7 +22,7 @@ export default function LoginPage({ setPage, onLogin }) {
     setError("");
     setLoading(true);
     try {
-      const res  = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+      const res  = await fetch(`${API_BASE}/api/auth/login`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ email, password }),
@@ -39,7 +40,7 @@ export default function LoginPage({ setPage, onLogin }) {
 
   const handleGoogle = () => {
     // Redirects to backend which handles Google OAuth flow
-    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
+    window.location.href = `${API_BASE}/api/auth/google`;
   };
 
   return (

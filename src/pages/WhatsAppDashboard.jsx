@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useLang } from "../utils/useLang";
 import { t } from "../utils/translate";
+import { API_BASE } from "../config/api";
 
 export default function WhatsAppDashboard() {
   useLang();
@@ -19,7 +20,7 @@ export default function WhatsAppDashboard() {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch("/api/whatsapp/stats");
+      const res = await fetch(`${API_BASE}/api/whatsapp/stats`);
       if (!res.ok) throw new Error("Failed to fetch stats");
       const data = await res.json();
       setStats(data);

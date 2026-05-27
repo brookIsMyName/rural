@@ -5,6 +5,7 @@
 //           3) browser GPS (with permission prompt)
 //           4) IP-based fallback (silent, no permission needed)
 
+import { API_BASE } from "../config/api";
 const CACHE_KEY = "rc_location";
 const CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days
 
@@ -25,7 +26,7 @@ function cacheLocation(loc) {
 async function saveToServer(loc) {
   const token = localStorage.getItem("rc_token");
   try {
-    await fetch("/api/location/save", {
+    await fetch(`${API_BASE}/api/location/save`, {
       method:  "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +68,7 @@ export async function resolveLocation(user) {
 
   // 3. Try IP-based fallback first (silent — no permission needed, city-level only)
   try {
-    const r = await fetch("/api/location/ip");
+    const r = await fetch(`${API_BASE}/api/location/ip`);
     const d = await r.json();
     if (d.location?.lat) {
       const loc = { ...d.location, source: "ip" };
