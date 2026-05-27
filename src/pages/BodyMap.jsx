@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { bodyRegions } from "../data/bodyMapData";
+import { API_BASE } from "../config/api";
 
 export default function BodyMap() {
   const [selectedParts, setSelectedParts] =
@@ -49,7 +50,7 @@ export default function BodyMap() {
 
     try {
       const res = await fetch(
-        "http://localhost:5000/api/symptoms",
+        `${API_BASE}/api/symptoms`,
         {
           method: "POST",
           headers: {

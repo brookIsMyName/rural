@@ -4,6 +4,7 @@ import { useLang }             from "../utils/useLang";
 import { t }                   from "../utils/translate";
 import { getCachedLocation, requestGPSLocation } from "../utils/useLocation";
 import caregivers from "../data/caregivers.json";
+import { API_BASE } from "../config/api";
 
 const TYPE_COLOR = { Clinic: "#0ea5e9", NGO: "#8b5cf6", CHW: "#10b981", Hotline: "#f59e0b" };
 const TYPES      = ["All", "Clinic", "NGO", "CHW", "Hotline"];
@@ -72,7 +73,7 @@ export default function CaregiversPage({ user }) {
     } catch {
       // GPS denied — try IP fallback
       try {
-        const r = await fetch("/api/location/ip");
+        const r = await fetch(`${API_BASE}/api/location/ip`);
         const d = await r.json();
         if (d.location?.lat) { setLocation(d.location); setAsking(false); }
         else { setAsking(false); } // show all

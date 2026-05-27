@@ -1,4 +1,14 @@
-const API = "http://localhost:5000/api/chat";
+import { API_BASE } from "../config/api";
+
+const API = `${API_BASE}/api/chat`;
+
+function withAuthHeaders(extraHeaders = {}) {
+  const token = localStorage.getItem("rc_token");
+  return {
+    ...extraHeaders,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
 
 
 // CREATE CHAT
@@ -8,7 +18,7 @@ export async function createConversation(userId) {
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        ...withAuthHeaders({ "Content-Type": "application/json" }),
       },
       body: JSON.stringify({ userId }),
     }
@@ -20,9 +30,9 @@ export async function createConversation(userId) {
 
 // GET CHATS
 export async function getConversations(userId) {
-  const res = await fetch(
-    `${API}/conversations/${userId}`
-  );
+  const res = await fetch(`${API}/conversations/${userId}`, {
+    headers: withAuthHeaders(),
+  });
 
   return res.json();
 }
@@ -30,9 +40,9 @@ export async function getConversations(userId) {
 
 // GET MESSAGES
 export async function getMessages(conversationId) {
-  const res = await fetch(
-    `${API}/messages/${conversationId}`
-  );
+  const res = await fetch(`${API}/messages/${conversationId}`, {
+    headers: withAuthHeaders(),
+  });
 
   return res.json();
 }
@@ -49,7 +59,7 @@ export async function saveMessage(
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        ...withAuthHeaders({ "Content-Type": "application/json" }),
       },
 
       body: JSON.stringify({
@@ -74,7 +84,7 @@ export async function updateConversationTitle(
     {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
+        ...withAuthHeaders({ "Content-Type": "application/json" }),
       },
       body: JSON.stringify({ title }),
     }
