@@ -64,7 +64,7 @@ router.get(
   (req, res) => {
     const token = signToken(req.user);
     const user  = JSON.stringify(req.user.toSafeObject());
-    const clientURL = process.env.CLIENT_URL || "http://localhost:5173";
+    const clientURL = process.env.CLIENT_URL || "https://salviahealth.vercel.app";
     res.redirect(`${clientURL}/auth/callback#token=${token}&user=${encodeURIComponent(user)}`);
   }
 );

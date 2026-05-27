@@ -1,11 +1,8 @@
 // server/index.js
 
-import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: join(__dirname, ".env") });
 
 import express from "express";
 import cors from "cors";
@@ -26,7 +23,7 @@ initGoogleStrategy();
 const app  = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: "https://salviahealth.vercel.app", credentials: true }));
 
 app.use("/api/symptoms",  symptomRoutes);   // before express.json() — keep as you had it
 

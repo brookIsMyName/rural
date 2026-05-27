@@ -48,7 +48,7 @@ passport.use(
 export function initGoogleStrategy() {
   const clientID     = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  const callbackURL  = process.env.GOOGLE_CALLBACK_URL || "http://localhost:5000/api/auth/google/callback";
+  const callbackURL  = process.env.GOOGLE_CALLBACK_URL || "https://rural-ujmh.onrender.com/api/auth/google/callback";
 
   if (!clientID || !clientSecret) {
     console.warn("⚠️  GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET missing — Google login disabled.");
