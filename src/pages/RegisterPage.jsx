@@ -70,7 +70,7 @@ export default function RegisterPage({ setPage, onLogin }) {
         {/* Logo */}
         <div style={styles.logoRow}>
           <div style={styles.logoIcon}>🏥</div>
-          <span style={styles.logoText}>RuralCare <span style={{ color: "#10b981" }}>AI</span></span>
+          <span style={styles.logoText}>Salvia <span style={{ color: "#10b981" }}>AI</span></span>
         </div>
 
         <h1 style={styles.heading}>Create your account</h1>

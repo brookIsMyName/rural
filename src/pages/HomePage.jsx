@@ -6,6 +6,37 @@ import { t } from "../utils/translate";
 export default function HomePage({ setPage, goToChat }) {
   useLang(); // re-render on language change
   const heroRef = useRef(null);
+  const revealRefs = useRef([]);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("reveal-visible");
+        }
+      });
+    },
+    {
+      threshold: 0.12,
+    }
+  );
+
+  revealRefs.current.forEach((el) => {
+    if (el) observer.observe(el);
+  });
+
+  return () => observer.disconnect();
+}, []);
+
+const addRevealRef = (el) => {
+  if (
+    el &&
+    !revealRefs.current.includes(el)
+  ) {
+    revealRefs.current.push(el);
+  }
+};
 
   const features = [
     { icon: "💬", title: t("healthChat"),   desc: t("featChatDesc"),      page: "chat",       color: "#10b981" },
@@ -31,6 +62,19 @@ export default function HomePage({ setPage, goToChat }) {
   return (
     <div style={{ minHeight: "100vh", paddingTop: 62, overflowX: "hidden" }}>
       <style>{`
+      .reveal {
+  opacity: 0;
+  transform: translateY(45px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+  will-change: opacity, transform;
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(28px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -105,7 +149,7 @@ export default function HomePage({ setPage, goToChat }) {
 
       {/* ── HERO ── */}
       <section ref={heroRef} style={{ minHeight: "91vh", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "60px 20px", position: "relative", overflow: "hidden" }}>
-
+        
         {/* Animated background blobs */}
         <div style={{ position: "absolute", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(16,185,129,0.09) 0%, transparent 70%)", top: "10%", left: "50%", transform: "translateX(-50%)", animation: "floatA 8s ease-in-out infinite", pointerEvents: "none" }} />
         <div style={{ position: "absolute", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(14,165,233,0.07) 0%, transparent 70%)", bottom: "10%", right: "5%", animation: "floatB 10s ease-in-out infinite", pointerEvents: "none" }} />
@@ -151,7 +195,8 @@ export default function HomePage({ setPage, goToChat }) {
       </section>
 
       {/* ── FEATURES ── */}
-      <section style={{ padding: "80px 20px", maxWidth: 1100, margin: "0 auto" }}>
+      <section ref={addRevealRef}
+  className="reveal" style={{  padding: "80px 20px", maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 52 }}>
           <h2 style={{ fontFamily: "'Playfair Display',serif", color: "#fff", fontSize: "clamp(24px,3vw,38px)", marginBottom: 12 }}>{t("whatWeOffer")}</h2>
           <p style={{ color: "rgba(255,255,255,0.38)", fontFamily: "'DM Sans',sans-serif", fontSize: 15 }}>{t("builtFor")}</p>
@@ -171,7 +216,8 @@ export default function HomePage({ setPage, goToChat }) {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section style={{ padding: "80px 20px", background: "linear-gradient(180deg, rgba(16,185,129,0.03) 0%, transparent 100%)", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+      <section ref={addRevealRef}
+  className="reveal" style={{ padding: "80px 20px", background: "linear-gradient(180deg, rgba(16,185,129,0.03) 0%, transparent 100%)", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div style={{ maxWidth: 860, margin: "0 auto", textAlign: "center" }}>
           <h2 style={{ fontFamily: "'Playfair Display',serif", color: "#fff", fontSize: "clamp(24px,3vw,38px)", marginBottom: 56 }}>{t("howItWorks")}</h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 36, position: "relative" }}>
@@ -189,7 +235,8 @@ export default function HomePage({ setPage, goToChat }) {
       </section>
 
       {/* ── IMPACT STATS ── */}
-      <section style={{ padding: "80px 20px", maxWidth: 960, margin: "0 auto", textAlign: "center" }}>
+      <section ref={addRevealRef}
+  className="reveal" style={{ padding: "80px 20px", maxWidth: 960, margin: "0 auto", textAlign: "center" }}>
         <h2 style={{ fontFamily: "'Playfair Display',serif", color: "#fff", fontSize: "clamp(22px,3vw,34px)", marginBottom: 44 }}>{t("healthcareGap")}</h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 20 }}>
           {stats.map((s, i) => (
@@ -202,14 +249,15 @@ export default function HomePage({ setPage, goToChat }) {
       </section>
 
       {/* ── BOTTOM CTA BANNER ── */}
-      <section style={{ margin: "0 20px 80px", maxWidth: 900, marginLeft: "auto", marginRight: "auto" }}>
+      <section ref={addRevealRef}
+  className="reveal" style={{ margin: "0 20px 80px", maxWidth: 900, marginLeft: "auto", marginRight: "auto" }}>
         <div style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(14,165,233,0.08) 100%)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 24, padding: "48px 40px", textAlign: "center", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(16,185,129,0.04) 1px, transparent 1px)", backgroundSize: "24px 24px", pointerEvents: "none" }} />
           <h3 style={{ fontFamily: "'Playfair Display',serif", color: "#fff", fontSize: "clamp(22px,3vw,30px)", marginBottom: 14, position: "relative" }}>
             Ready to get started?
           </h3>
           <p style={{ color: "rgba(255,255,255,0.45)", fontFamily: "'DM Sans',sans-serif", fontSize: 15, marginBottom: 28, position: "relative" }}>
-            Describe your symptoms and get safe, AI-powered health guidance in seconds.
+          {t("ctaDescription")}
           </p>
           <button onClick={goToChat} className="cta-primary" style={{ background: "linear-gradient(135deg,#10b981,#059669)", border: "none", borderRadius: 12, padding: "14px 32px", color: "#fff", fontSize: 15, fontFamily: "'DM Sans',sans-serif", fontWeight: 600, cursor: "pointer", boxShadow: "0 0 24px rgba(16,185,129,0.3)", position: "relative" }}>
             {t("startChat")}

@@ -1,5 +1,5 @@
 // server/config/passport.js
-import passport        from "passport";
+import passport from "passport";
 import { Strategy as LocalStrategy }  from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../models/User.js";
@@ -16,15 +16,27 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// ── Local Strategy ────────────────────────────────────────────────────────────
+// ── Local Strategy (email + password) ────────────────────────────────────────
 passport.use(
   new LocalStrategy({ usernameField: "email" }, async (email, password, done) => {
     try {
       const user = await User.findOne({ email });
-      if (!user)                      return done(null, false, { message: "No account found with that email." });
-      if (user.provider === "google") return done(null, false, { message: "Please sign in with Google." });
+
+      if (!user) {
+        return done(null, false, { message: "No account found with that email." });
+      }
+
+      // Block login only if account has NO password at all (pure Google account)
+      // If they have both a password AND a googleId, allow email login
+      if (!user.password) {
+        return done(null, false, { message: "This account uses Google sign-in. Please sign in with Google." });
+      }
+
       const match = await user.comparePassword(password);
-      if (!match)                     return done(null, false, { message: "Incorrect password." });
+      if (!match) {
+        return done(null, false, { message: "Incorrect password." });
+      }
+
       return done(null, user);
     } catch (err) {
       return done(err);
@@ -32,7 +44,7 @@ passport.use(
   })
 );
 
-// ── Google Strategy — wrapped in a function so it only runs AFTER dotenv ──────
+// ── Google Strategy ───────────────────────────────────────────────────────────
 export function initGoogleStrategy() {
   const clientID     = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -48,26 +60,40 @@ export function initGoogleStrategy() {
       { clientID, clientSecret, callbackURL },
       async (_accessToken, _refreshToken, profile, done) => {
         try {
-          let user = await User.findOne({ googleId: profile.id });
+          const googleId = profile.id;
+          const email    = profile.emails?.[0]?.value;
+          const avatar   = profile.photos?.[0]?.value || null;
+          const name     = profile.displayName;
 
-          if (!user) {
-            user = await User.findOne({ email: profile.emails?.[0]?.value });
-            if (user) {
-              user.googleId = profile.id;
-              user.avatar   = profile.photos?.[0]?.value || null;
+          // 1. Already linked by googleId
+          let user = await User.findOne({ googleId });
+          if (user) return done(null, user);
+
+          // 2. Existing email account — link Google to it
+          //    BUT preserve the existing provider + password so email login still works
+          user = await User.findOne({ email });
+          if (user) {
+            user.googleId = googleId;
+            user.avatar   = avatar;
+            // Only update provider to "google" if they have no password
+            // If they registered with email+password, keep provider as "local"
+            // so both login methods continue to work
+            if (!user.password) {
               user.provider = "google";
-              await user.save();
-            } else {
-              user = await User.create({
-                name:     profile.displayName,
-                email:    profile.emails?.[0]?.value,
-                googleId: profile.id,
-                avatar:   profile.photos?.[0]?.value || null,
-                provider: "google",
-                password: null,
-              });
             }
+            await user.save();
+            return done(null, user);
           }
+
+          // 3. Brand new user — create with Google
+          user = await User.create({
+            name,
+            email,
+            googleId,
+            avatar,
+            provider: "google",
+            password: null,
+          });
 
           return done(null, user);
         } catch (err) {

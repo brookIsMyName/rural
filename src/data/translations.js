@@ -1,6 +1,8 @@
 // src/data/translations.js
 export const translations = {
   en: {
+    ctaDescription: "Describe your symptoms and get safe, AI-powered health guidance in seconds.",
+    ContactUs: "ContactUs",
     bodyMap: "Body Map",
     home: "Home", healthChat: "Health Chat", alerts: "Alerts",
     firstAid: "First Aid", findCare: "Find Care",
@@ -39,6 +41,7 @@ export const translations = {
     outbreakSubtitle: "Active outbreak alerts near your area",
   },
   fr: {
+    ctaDescription: "Décrivez vos symptômes et obtenez des conseils de santé sûrs alimentés par l’IA en quelques secondes.",
     home: "Accueil", healthChat: "Chat Santé", alerts: "Alertes",
     firstAid: "Premiers secours", findCare: "Trouver des soins",
     signIn: "Connexion", signUp: "Créer un compte", signOut: "Déconnexion",
@@ -76,6 +79,7 @@ export const translations = {
     outbreakSubtitle: "Alertes épidémiques actives près de chez vous",
   },
   sw: {
+    ctaDescription: "Eleza dalili zako na upate mwongozo salama wa afya unaotumia AI ndani ya sekunde chache.",
     home: "Nyumbani", healthChat: "Mazungumzo ya Afya", alerts: "Tahadhari",
     firstAid: "Msaada wa Kwanza", findCare: "Pata Huduma",
     signIn: "Ingia", signUp: "Jisajili", signOut: "Toka",
@@ -113,6 +117,7 @@ export const translations = {
     outbreakSubtitle: "Tahadhari za milipuko inayofanya kazi karibu na eneo lako",
   },
   am: {
+    ctaDescription: "ምልክቶችዎን ይግለጹ እና በAI የሚሰራ ደህንነቱ የተጠበቀ የጤና መመሪያ በጥቂት ሰከንዶች ውስጥ ያግኙ።",
     home: "መነሻ", healthChat: "የጤና ውይይት", alerts: "ማስጠንቀቂያዎች",
     firstAid: "የመጀመሪያ እርዳታ", findCare: "እርዳታ ፈልግ",
     signIn: "ግባ", signUp: "ተመዝገብ", signOut: "ውጣ",
@@ -150,6 +155,7 @@ export const translations = {
     outbreakSubtitle: "በቦታዎ አቅራቢያ ንቁ የወረርሽኝ ማስጠንቀቂያዎች",
   },
   rw: {
+    ctaDescription: "Sobanura ibimenyetso byawe maze ubone ubufasha bw’ubuzima bwizewe bukoresheje AI mu masegonda make.",
     home: "Ahabanza", healthChat: "Ikiganiro cy'Ubuzima", alerts: "Impanuka",
     firstAid: "Ubufasha bwa Mbere", findCare: "Shaka Ubuvuzi",
     signIn: "Injira", signUp: "Iyandikishe", signOut: "Sohoka",

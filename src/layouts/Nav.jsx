@@ -108,7 +108,7 @@ export default function Nav({
           zIndex: 5000,
 
           background:
-            "rgba(10,14,20,0.92)",
+            "rgba(29, 33, 37, 0.92)",
 
           backdropFilter: "blur(18px)",
 
@@ -163,25 +163,17 @@ export default function Nav({
             >
               <div
                 style={{
+                  marginLeft: 10,
                   width: 30,
                   height: 30,
-
                   borderRadius: 8,
-
-                  background:
-                    "linear-gradient(135deg,#10b981,#0ea5e9)",
-
                   display: "flex",
-
                   alignItems: "center",
-
-                  justifyContent:
-                    "center",
-
+                  justifyContent: "center",
                   fontSize: 15,
                 }}
               >
-                🏥
+                <img src="../faviconphoto.png" width="30px" height="30px" alt="Logo.png" />
               </div>
 
               <span
@@ -198,7 +190,7 @@ export default function Nav({
                   whiteSpace: "nowrap",
                 }}
               >
-                RuralCare{" "}
+                Salvia{" "}
                 <span
                   style={{
                     color: "#10b981",
@@ -377,6 +369,13 @@ export default function Nav({
                         label:
                           t(
                             "alerts"
+                          ),
+                      },
+                      {
+                        id: "ContactPage",
+                        label:
+                          t(
+                            "ContactPage"
                           ),
                       },
                     ].map((item) => (

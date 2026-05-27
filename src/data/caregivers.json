@@ -12,22 +12,22 @@
   },
   {
     "id": 2,
-    "name": "MSF Mobile Medical Unit",
+    "name": "MSF Mobile Medical Unit (Rwanda Operations)",
     "type": "NGO",
     "services": ["Emergency Care", "Surgical Support", "Mental Health", "HIV/TB Programs"],
-    "phone": "+254 700 123 456",
-    "region": "East Africa Region",
-    "availability": "24/7 Emergency Line",
-    "distance": "Contact for location",
+    "phone": "+250 788 900 111",
+    "region": "Kigali & Field Operations",
+    "availability": "24/7 Emergency Response",
+    "distance": "Mobile Unit",
     "emergency": true
   },
   {
     "id": 3,
-    "name": "Amara Community Health Worker",
+    "name": "Amara Community Health Worker Network",
     "type": "CHW",
     "services": ["Home Visits", "Prenatal Support", "Child Nutrition", "Referral Guidance"],
     "phone": "+250 722 456 789",
-    "region": "Gasabo District",
+    "region": "Gasabo District, Kigali",
     "availability": "Daily, 8am–5pm",
     "distance": "0.8 km",
     "emergency": false
@@ -45,7 +45,7 @@
   },
   {
     "id": 5,
-    "name": "Partners in Health Clinic",
+    "name": "Partners in Health - Rwinkwavu Hospital",
     "type": "Clinic",
     "services": ["Chronic Disease Care", "Surgery", "Cancer Screening", "Pediatrics"],
     "phone": "+250 788 302 100",
@@ -56,13 +56,116 @@
   },
   {
     "id": 6,
-    "name": "UNICEF Child Health Program",
+    "name": "UNICEF Rwanda Child Health Program",
     "type": "NGO",
     "services": ["Child Immunization", "Nutrition Screening", "Water & Sanitation", "Emergency Relief"],
-    "phone": "+254 20 762 1234",
-    "region": "Multi-country",
+    "phone": "+250 788 000 222",
+    "region": "Kigali / National",
     "availability": "Business hours",
-    "distance": "Regional office",
+    "distance": "Regional Office",
+    "emergency": false
+  },
+
+  {
+    "id": 7,
+    "name": "King Faisal Hospital Kigali",
+    "type": "Clinic",
+    "services": ["Emergency Care", "Surgery", "Cardiology", "Maternity", "Specialist Care"],
+    "phone": "+250 788 123 200",
+    "region": "Kigali, Rwanda (Gasabo District)",
+    "availability": "24/7",
+    "distance": "3.4 km",
+    "emergency": true
+  },
+  {
+    "id": 8,
+    "name": "Rwanda Military Hospital",
+    "type": "Clinic",
+    "services": ["Emergency Surgery", "Trauma Care", "General Medicine", "Intensive Care"],
+    "phone": "+250 788 555 100",
+    "region": "Kanombe, Kigali",
+    "availability": "24/7 Emergency",
+    "distance": "8.2 km",
+    "emergency": true
+  },
+  {
+    "id": 9,
+    "name": "Legacy Clinic Kigali Heights",
+    "type": "Clinic",
+    "services": ["General Consultation", "Diagnostics", "Vaccinations", "Travel Medicine"],
+    "phone": "+250 788 444 333",
+    "region": "Kigali Heights (Near ALU Campus)",
+    "availability": "Mon–Sat, 8am–7pm",
+    "distance": "0.6 km",
+    "emergency": false
+  },
+  {
+    "id": 10,
+    "name": "Lifeline Medical Center",
+    "type": "Clinic",
+    "services": ["General Care", "Emergency Stabilization", "Lab Tests", "Pharmacy"],
+    "phone": "+250 788 777 888",
+    "region": "Kacyiru, Kigali",
+    "availability": "24/7",
+    "distance": "2.9 km",
+    "emergency": true
+  },
+
+  {
+    "id": 11,
+    "name": "Rwanda Red Cross Health Services",
+    "type": "NGO",
+    "services": ["First Aid", "Disaster Response", "Emergency Transport", "Blood Donation"],
+    "phone": "+250 788 300 900",
+    "region": "Nationwide Rwanda",
+    "availability": "24/7 Emergency Response",
+    "distance": "Nationwide",
+    "emergency": true
+  },
+  {
+    "id": 12,
+    "name": "Solid'Africa Health Outreach",
+    "type": "NGO",
+    "services": ["Hospital Food Support", "Patient Care Support", "Community Health", "Nutrition"],
+    "phone": "+250 788 321 654",
+    "region": "Kigali",
+    "availability": "Mon–Fri, 8am–5pm",
+    "distance": "1.5 km",
+    "emergency": false
+  },
+
+  {
+    "id": 13,
+    "name": "Muhima Hospital",
+    "type": "Clinic",
+    "services": ["Maternal Care", "Emergency Services", "Pediatrics", "General Surgery"],
+    "phone": "+250 788 200 111",
+    "region": "Muhima, Kigali",
+    "availability": "24/7",
+    "distance": "4.1 km",
+    "emergency": true
+  },
+  {
+    "id": 14,
+    "name": "CHUK (University Teaching Hospital of Kigali)",
+    "type": "Clinic",
+    "services": ["Specialist Care", "Emergency Medicine", "Surgery", "Diagnostics"],
+    "phone": "+250 788 123 999",
+    "region": "Nyarugenge, Kigali",
+    "availability": "24/7",
+    "distance": "6.0 km",
+    "emergency": true
+  },
+
+  {
+    "id": 15,
+    "name": "ALU Campus First Aid Station",
+    "type": "Clinic",
+    "services": ["Basic First Aid", "Emergency Stabilization", "Student Health Support"],
+    "phone": "+250 788 000 000",
+    "region": "Kigali Heights (ALU Campus)",
+    "availability": "Mon–Fri, Campus Hours",
+    "distance": "0.0 km",
     "emergency": false
   }
 ]

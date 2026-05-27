@@ -8,7 +8,8 @@ import FirstAidPage   from "./pages/FirstAidPage";
 import CaregiversPage from "./pages/CaregiversPage";
 import LoginPage      from "./pages/LoginPage";
 import RegisterPage   from "./pages/RegisterPage";
-import BodyMap from "./pages/BodyMap";
+import BodyMap from "./pages/BodyMap"; 
+import ContactPage from "./pages/contact";
 import { resolveLocation } from "./utils/useLocation";
 import "./index.css";
 
@@ -99,6 +100,7 @@ export default function App() {
       {page === "outbreaks"  && <OutbreaksPage user={user} />}
       {page === "firstaid"   && <FirstAidPage />}
       {page === "caregivers" && <CaregiversPage user={user} />}
+      {page === "ContactPage" && <ContactPage /> }
     </div>
   );
 }
