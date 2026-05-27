@@ -2,6 +2,7 @@
 
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import dotenv from "dotenv";
 
 
 import express from "express";
@@ -18,6 +19,7 @@ import chatRoutes     from "./routes/chatRoutes.js";
 import symptomRoutes  from "./routes/symptomRoutes.js";
 import whatsappRoutes from "./routes/whatsapp.js";   // ← NEW
 
+dotenv.config();
 initGoogleStrategy();
 
 const app  = express();
