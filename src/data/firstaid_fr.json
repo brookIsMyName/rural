@@ -1,0 +1,188 @@
+[
+  {
+    "id": 1,
+    "category": "Brûlures",
+    "icon": "🔥",
+    "color": "#ef4444",
+    "signs": [
+      "Peau rouge, cloquée ou carbonisée",
+      "Douleur intense ou engourdissement",
+      "Gonflement autour de la zone brûlée"
+    ],
+    "dos": [
+      "Refroidir la brûlure avec de l'eau fraîche (pas froide) pendant 10 à 20 minutes",
+      "Couvrir légèrement avec un tissu propre non pelucheux ou du film alimentaire",
+      "Retirer les bagues ou vêtements serrés près de la brûlure avant le gonflement",
+      "Donner du paracétamol pour la douleur si disponible"
+    ],
+    "donts": [
+      "Ne PAS utiliser de glace, beurre, dentifrice ou huile sur les brûlures",
+      "Ne PAS percer les cloques",
+      "Ne PAS retirer les vêtements collés à la brûlure",
+      "Ne PAS appliquer de coton directement sur la plaie"
+    ],
+    "urgent": "Consultez immédiatement si la brûlure est plus grande que votre paume, touche le visage/mains/organes génitaux, ou est profonde et indolore (lésion nerveuse)."
+  },
+  {
+    "id": 2,
+    "category": "Saignement grave",
+    "icon": "🩸",
+    "color": "#dc2626",
+    "signs": [
+      "Sang qui traverse les vêtements",
+      "Plaie qui ne cesse pas de saigner",
+      "Personne pâle, froide ou confuse"
+    ],
+    "dos": [
+      "Appliquer une pression ferme et directe avec un tissu propre",
+      "Maintenir la pression — ne pas retirer le tissu (en ajouter un autre par-dessus s'il est imbibé)",
+      "Élever la zone blessée au-dessus du cœur si possible",
+      "Garder la personne immobile et au chaud"
+    ],
+    "donts": [
+      "Ne PAS retirer le tissu pour vérifier la plaie",
+      "Ne PAS utiliser de garrot sauf si vous êtes formé et uniquement pour les membres avec saignement mortel",
+      "Ne PAS donner de nourriture ou d'eau si une intervention chirurgicale peut être nécessaire"
+    ],
+    "urgent": "Tout saignement grave nécessite une consultation urgente en clinique ou à l'hôpital. Appelez à l'aide immédiatement."
+  },
+  {
+    "id": 3,
+    "category": "Étouffement",
+    "icon": "🫁",
+    "color": "#f97316",
+    "signs": [
+      "Incapable de parler, tousser ou respirer",
+      "Se saisit la gorge",
+      "Visage qui devient bleu ou rouge"
+    ],
+    "dos": [
+      "L'encourager à tousser fortement si possible",
+      "Donner jusqu'à 5 claques fermes dans le dos entre les omoplates",
+      "Si les claques échouent : donner jusqu'à 5 compressions abdominales (manœuvre de Heimlich)",
+      "Pour les nourrissons : utiliser uniquement des tapotements doux dans le dos et des compressions thoraciques"
+    ],
+    "donts": [
+      "Ne PAS effectuer de compressions abdominales sur les nourrissons de moins d'un an",
+      "Ne PAS faire de balayages aveugles des doigts dans la bouche",
+      "Ne PAS donner d'eau ou de nourriture"
+    ],
+    "urgent": "Si les voies respiratoires ne sont pas dégagées après les claques et compressions, appelez les secours d'urgence immédiatement."
+  },
+  {
+    "id": 4,
+    "category": "Évanouissement",
+    "icon": "😵",
+    "color": "#8b5cf6",
+    "signs": [
+      "Perte soudaine de conscience",
+      "Peau pâle et moite avant l'évanouissement",
+      "Pouls faible"
+    ],
+    "dos": [
+      "Allonger la personne à plat sur le dos",
+      "Lever les jambes à 30 cm au-dessus du niveau du cœur si possible",
+      "Desserrer les vêtements serrés autour du cou et de la taille",
+      "L'éventer et lui parler calmement lorsqu'elle reprend conscience"
+    ],
+    "donts": [
+      "Ne PAS donner d'eau ou de nourriture avant qu'elle soit pleinement consciente",
+      "Ne PAS la laisser seule",
+      "Ne PAS la faire asseoir trop rapidement"
+    ],
+    "urgent": "Consultez si la personne ne reprend pas conscience dans 1 à 2 minutes, ou si elle a des douleurs thoraciques, des difficultés respiratoires ou des convulsions."
+  },
+  {
+    "id": 5,
+    "category": "Morsure de serpent",
+    "icon": "🐍",
+    "color": "#16a34a",
+    "signs": [
+      "Marques de crochets visibles",
+      "Gonflement ou ecchymoses autour de la morsure",
+      "Nausées, vertiges ou difficultés respiratoires"
+    ],
+    "dos": [
+      "Garder la personne immobile et calme — le mouvement propage le venin plus vite",
+      "Immobiliser le membre mordu au niveau ou en dessous du cœur",
+      "Retirer montres, bagues ou vêtements serrés près de la morsure",
+      "Se rendre à l'hôpital ou à la clinique le plus vite possible avec un antivenin"
+    ],
+    "donts": [
+      "Ne PAS inciser la plaie ni essayer de sucer le venin",
+      "Ne PAS appliquer de glace ou de garrot",
+      "Ne PAS donner d'alcool ou de nourriture",
+      "Ne PAS essayer d'attraper le serpent"
+    ],
+    "urgent": "TOUTES les morsures de serpent doivent être traitées comme des urgences médicales. Rejoignez immédiatement un centre de santé avec antivenin."
+  },
+  {
+    "id": 6,
+    "category": "Déshydratation",
+    "icon": "💧",
+    "color": "#0ea5e9",
+    "signs": [
+      "Soif intense et bouche sèche",
+      "Absence d'urination pendant 8 heures ou plus",
+      "Yeux enfoncés, vertiges, rythme cardiaque rapide"
+    ],
+    "dos": [
+      "Donner une Solution de Réhydratation Orale (SRO) par petites gorgées fréquentes",
+      "Si pas de SRO : mélanger 1 litre d'eau + 6 cuillères à café de sucre + ½ cuillère à café de sel",
+      "Continuer à donner des liquides même en cas de vomissements — en petites quantités souvent",
+      "Pour les nourrissons : continuer l'allaitement en plus de la SRO"
+    ],
+    "donts": [
+      "Ne PAS donner uniquement de l'eau pure en cas grave (manque de sels)",
+      "Ne PAS donner de sodas sucrés ou de jus à la place",
+      "Ne PAS ignorer la déshydratation chez les enfants — elle s'aggrave rapidement"
+    ],
+    "urgent": "Consultez en urgence si la personne ne peut pas garder de liquides, est inconsciente, a une fontanelle enfoncée (nourrissons), ou n'urine pas depuis 8 heures."
+  },
+  {
+    "id": 7,
+    "category": "Convulsions",
+    "icon": "⚡",
+    "color": "#7c3aed",
+    "signs": [
+      "Perte soudaine de conscience avec convulsions",
+      "Tremblements ou raideur incontrôlés",
+      "Confusion ou somnolence après l'épisode"
+    ],
+    "dos": [
+      "Chronométrer la crise — noter quand elle commence",
+      "Protéger la tête avec un coussin doux en dessous",
+      "Tourner doucement la personne sur le côté (position de récupération) après l'arrêt des convulsions",
+      "Rester avec elle jusqu'à ce qu'elle soit pleinement alerte"
+    ],
+    "donts": [
+      "Ne PAS retenir la personne ou la maintenir de force",
+      "Ne PAS mettre quoi que ce soit dans sa bouche",
+      "Ne PAS donner d'eau ou de nourriture pendant ou immédiatement après"
+    ],
+    "urgent": "Appelez les secours si : la crise dure plus de 5 minutes, la personne ne reprend pas conscience, c'est une première crise, ou elle est blessée."
+  },
+  {
+    "id": 8,
+    "category": "Coup de chaleur",
+    "icon": "☀️",
+    "color": "#f59e0b",
+    "signs": [
+      "Température corporelle supérieure à 40°C (104°F)",
+      "Peau chaude et sèche (transpiration arrêtée)",
+      "Confusion, discours incompréhensible ou inconscience"
+    ],
+    "dos": [
+      "Déplacer immédiatement la personne à l'ombre ou dans un endroit frais",
+      "Refroidir le corps rapidement — linges humides sur le cou, les aisselles, l'aine",
+      "Éventer vigoureusement la personne tout en appliquant de l'eau fraîche",
+      "Donner de l'eau fraîche si elle est consciente et peut avaler"
+    ],
+    "donts": [
+      "Ne PAS donner d'aspirine ou de paracétamol (inefficaces pour le coup de chaleur)",
+      "Ne PAS laisser la personne au soleil ou dans un endroit chaud",
+      "Ne PAS donner de liquides si elle est inconsciente — risque d'étouffement"
+    ],
+    "urgent": "Le coup de chaleur est une urgence vitale. Consultez immédiatement à l'hôpital tout en refroidissant la personne."
+  }
+]

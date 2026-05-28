@@ -46,10 +46,10 @@ const addRevealRef = (el) => {
   ];
 
   const stats = [
-    { stat: "600M+",   label: "people in rural Africa lack adequate healthcare access" },
-    { stat: "1:40,000", label: "doctor-to-patient ratio in some rural regions" },
-    { stat: "70%",     label: "of preventable deaths occur in low-resource settings" },
-    { stat: "2hrs+",   label: "average travel time to reach a health facility" },
+  { stat: "600M+",   label: t("statHealthcareAccess") },
+{ stat: "1:40,000", label: t("statDoctorRatio") },
+{ stat: "70%",     label: t("statPreventableDeaths") },
+{ stat: "2hrs+",   label: t("statTravelTime") },
   ];
 
   const steps = [
@@ -254,7 +254,7 @@ const addRevealRef = (el) => {
         <div style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(14,165,233,0.08) 100%)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: 24, padding: "48px 40px", textAlign: "center", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(16,185,129,0.04) 1px, transparent 1px)", backgroundSize: "24px 24px", pointerEvents: "none" }} />
           <h3 style={{ fontFamily: "'Playfair Display',serif", color: "#fff", fontSize: "clamp(22px,3vw,30px)", marginBottom: 14, position: "relative" }}>
-            Ready to get started?
+            {t("readyToGetStarted")}
           </h3>
           <p style={{ color: "rgba(255,255,255,0.45)", fontFamily: "'DM Sans',sans-serif", fontSize: 15, marginBottom: 28, position: "relative" }}>
           {t("ctaDescription")}
