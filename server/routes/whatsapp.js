@@ -13,6 +13,16 @@ const getClient = () => twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
+const requiredEnv = [
+  "TWILIO_ACCOUNT_SID",
+  "TWILIO_AUTH_TOKEN",
+  "TWILIO_WHATSAPP_NUMBER",
+  "ANTHROPIC_API_KEY",
+];
+
+const missingEnv = () =>
+  requiredEnv.filter((key) => !process.env[key] || !String(process.env[key]).trim());
+
 // ── POST /api/whatsapp/incoming ───────────────────────────────────────────────
 router.post("/incoming", async (req, res) => {
   // Must respond to Twilio within 15s with TwiML — do it first
@@ -21,6 +31,12 @@ router.post("/incoming", async (req, res) => {
 
   // Everything else runs after response is sent
   try {
+    const missing = missingEnv();
+    if (missing.length) {
+      console.error(`[WhatsApp] Missing env vars: ${missing.join(", ")}`);
+      return;
+    }
+
     const From        = req.body?.From;
     const Body        = req.body?.Body;
     const ProfileName = req.body?.ProfileName;
@@ -31,6 +47,18 @@ router.post("/incoming", async (req, res) => {
 
     if (!From?.startsWith("whatsapp:") || !Body?.trim()) {
       console.warn("[WhatsApp] Invalid message — skipping");
+      return;
+    }
+
+    // Fast smoke-test command that bypasses Claude for easier production debugging.
+    if (/^(status|ping|test)$/i.test(Body.trim())) {
+      const testMessage = "✅ Bot is online. Send your symptoms and I will help.";
+      await getClient().messages.create({
+        from: process.env.TWILIO_WHATSAPP_NUMBER,
+        to: From,
+        body: testMessage,
+      });
+      console.log("[WhatsApp] ✅ Health-check reply sent");
       return;
     }
 
@@ -114,8 +142,10 @@ router.post("/incoming", async (req, res) => {
 
 // ── GET /api/whatsapp/ping ────────────────────────────────────────────────────
 router.get("/ping", (_req, res) => {
+  const missing = missingEnv();
   res.json({
     ok:             true,
+    missing_env:    missing,
     twilio_number:  process.env.TWILIO_WHATSAPP_NUMBER || "❌ NOT SET",
     anthropic_key:  process.env.ANTHROPIC_API_KEY      ? "✅ SET" : "❌ MISSING — add to server/.env",
     twilio_sid:     process.env.TWILIO_ACCOUNT_SID     ? "✅ SET" : "❌ MISSING",

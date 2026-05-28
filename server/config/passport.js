@@ -48,12 +48,26 @@ passport.use(
 export function initGoogleStrategy() {
   const clientID     = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  const callbackURL  = process.env.GOOGLE_CALLBACK_URL || "https://rural-ujmh.onrender.com/api/auth/google/callback";
+  const serverBase =
+    (process.env.SERVER_URL || process.env.RENDER_EXTERNAL_URL || "https://rural-ujmh.onrender.com")
+      .replace(/\/+$/, "");
+
+  let callbackURL =
+    process.env.GOOGLE_CALLBACK_URL ||
+    `${serverBase}/api/auth/google/callback`;
+
+  // Guard against common misconfiguration: using frontend URL as OAuth callback.
+  if (process.env.CLIENT_URL && callbackURL.startsWith(process.env.CLIENT_URL)) {
+    console.warn("⚠️  GOOGLE_CALLBACK_URL points to CLIENT_URL. Falling back to backend callback URL.");
+    callbackURL = `${serverBase}/api/auth/google/callback`;
+  }
 
   if (!clientID || !clientSecret) {
     console.warn("⚠️  GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET missing — Google login disabled.");
     return;
   }
+
+  console.log(`🔐 Google callback URL: ${callbackURL}`);
 
   passport.use(
     new GoogleStrategy(
