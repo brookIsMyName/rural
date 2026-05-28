@@ -1,0 +1,188 @@
+[
+  {
+    "id": 1,
+    "category": "Kuungua",
+    "icon": "🔥",
+    "color": "#ef4444",
+    "signs": [
+      "Ngozi nyekundu, yenye malengelenge, au iliyochomwa",
+      "Maumivu makali au ganzi",
+      "Uvimbe karibu na eneo lililoungua"
+    ],
+    "dos": [
+      "Poza kuungua kwa maji baridi ya bomba (si ya barafu) kwa dakika 10 hadi 20",
+      "Funika kwa kitambaa safi kisicho na nyuzi au plastiki ya chakula",
+      "Toa pete au nguo ngumu karibu na kuungua kabla ya uvimbe haujaanza",
+      "Toa paracetamol kwa maumivu ikiwa inapatikana"
+    ],
+    "donts": [
+      "USITUMIE barafu, siagi, mswaki, au mafuta kwenye kuungua",
+      "USIPASUE malengelenge",
+      "USIONDOE nguo zilizoshikamana na kuungua",
+      "USITUMIE pamba moja kwa moja kwenye jeraha"
+    ],
+    "urgent": "Tafuta msaada wa haraka kwa kuungua kwa ukubwa zaidi ya mkono wako, kuungua usoni/mikononi/sehemu za siri, au kuungua kwa kina bila maumivu (uharibifu wa neva)."
+  },
+  {
+    "id": 2,
+    "category": "Kutoka Damu Kwa Wingi",
+    "icon": "🩸",
+    "color": "#dc2626",
+    "signs": [
+      "Damu inayolowa nguo",
+      "Jeraha lisiloacha kutoka damu",
+      "Mtu mweupe, baridi, au mkanganyifu"
+    ],
+    "dos": [
+      "Bonyeza kwa nguvu moja kwa moja kwa kitambaa safi",
+      "Endelea kubonyeza — usiondoe kitambaa (ongeza kingine juu ikiwa kimejaa damu)",
+      "Inua eneo lililokumiwa juu ya moyo ikiwa inawezekana",
+      "Mweke mtu bila kusogea na joto"
+    ],
+    "donts": [
+      "USIONDOE kitambaa kuangalia jeraha",
+      "USITUMIE tourniquet isipokuwa umefunzwa na tu kwa viungo vyenye kutoka damu kwa hatari ya maisha",
+      "USIMPE chakula au maji ikiwa upasuaji unaweza kuhitajika"
+    ],
+    "urgent": "Kutoka damu kwa wingi kunahitaji msaada wa haraka wa kliniki au hospitali. Piga simu ya msaada mara moja."
+  },
+  {
+    "id": 3,
+    "category": "Kuziba Koo",
+    "icon": "🫁",
+    "color": "#f97316",
+    "signs": [
+      "Hawezi kusema, kukohoa, au kupumua",
+      "Anashika koo",
+      "Uso unageuka buluu au mwekundu"
+    ],
+    "dos": [
+      "Mhimize akohoe kwa nguvu ikiwa anaweza",
+      "Piga hadi mara 5 kwa nguvu mgongoni kati ya mabega",
+      "Ikiwa mgongo haufanyi kazi: piga hadi mara 5 tumboni (Heimlich maneuver)",
+      "Kwa watoto wachanga: tumia mapigo laini ya mgongo na msukumo wa kifua tu"
+    ],
+    "donts": [
+      "USIFANYE msukumo wa tumbo kwa watoto wachanga chini ya mwaka 1",
+      "USIFANYE uchunguzi wa kidole kwa macho kichwani",
+      "USIMPE maji au chakula"
+    ],
+    "urgent": "Ikiwa njia ya hewa haijawazi baada ya mapigo na msukumo, piga simu ya dharura mara moja."
+  },
+  {
+    "id": 4,
+    "category": "Kuzimia",
+    "icon": "😵",
+    "color": "#8b5cf6",
+    "signs": [
+      "Kupoteza fahamu ghafla",
+      "Ngozi nyeupe na yenye jasho kabla ya kuzimia",
+      "Mapigo ya moyo dhaifu"
+    ],
+    "dos": [
+      "Mlaze mtu chali uso juu",
+      "Inua miguu yake sentimita 30 juu ya kiwango cha moyo ikiwa inawezekana",
+      "Legeza nguo ngumu karibu na shingo na kiuno",
+      "Mpepee na mzungumze kwa utulivu anapopata fahamu"
+    ],
+    "donts": [
+      "USIMPE maji au chakula mpaka awe na fahamu kamili",
+      "USIMWACHE peke yake",
+      "USIMKALISHE haraka sana"
+    ],
+    "urgent": "Tafuta msaada ikiwa mtu hapati fahamu ndani ya dakika 1 hadi 2, au ana maumivu ya kifua, ugumu wa kupumua, au mshtuko."
+  },
+  {
+    "id": 5,
+    "category": "Kuumwa na Nyoka",
+    "icon": "🐍",
+    "color": "#16a34a",
+    "signs": [
+      "Alama za meno zinaonekana",
+      "Uvimbe au mdundo karibu na kuumwa",
+      "Kichefuchefu, kizunguzungu, au ugumu wa kupumua"
+    ],
+    "dos": [
+      "Mweke mtu bila kusogea na utulivu — harakati inaeneza sumu haraka",
+      "Simamisha kiungo kilichoumwa sawa au chini ya moyo",
+      "Toa saa, pete, au nguo ngumu karibu na kuumwa",
+      "Nenda hospitali au kliniki haraka iwezekanavyo na dawa ya sumu"
+    ],
+    "donts": [
+      "USIKATUE jeraha wala kujaribu kufyonza sumu",
+      "USITUMIE barafu au tourniquet",
+      "USIMPE pombe au chakula",
+      "USIJARIBU kumkamata nyoka"
+    ],
+    "urgent": "KUUMWA NA NYOKA YOTE kunapaswa kutibiwa kama dharura ya matibabu. Fikia kituo cha afya chenye dawa ya sumu mara moja."
+  },
+  {
+    "id": 6,
+    "category": "Upungufu wa Maji Mwilini",
+    "icon": "💧",
+    "color": "#0ea5e9",
+    "signs": [
+      "Kiu kali na mdomo kavu",
+      "Kutokukojoa kwa masaa 8 au zaidi",
+      "Macho yaliyozama, kizunguzungu, mapigo ya moyo ya haraka"
+    ],
+    "dos": [
+      "Toa Suluhisho la Urejeshaji wa Maji (ORS) kidogo kidogo mara kwa mara",
+      "Ikiwa hakuna ORS: changanya lita 1 ya maji + vijiko 6 vya sukari + nusu kijiko cha chumvi",
+      "Endelea kutoa maji hata akitapika — kidogo mara nyingi",
+      "Kwa watoto wachanga: endelea kunyonyesha pamoja na ORS"
+    ],
+    "donts": [
+      "USIMPE maji safi tu katika hali mbaya (haina chumvi za kutosha)",
+      "USIMPE soda tamu au juisi badala yake",
+      "USIPUUZE upungufu wa maji kwa watoto — inazidi haraka"
+    ],
+    "urgent": "Tafuta msaada wa haraka ikiwa mtu hawezi kushikilia maji, ana fahamu, ana fontanelle iliyozama (watoto wachanga), au hakojoa kwa masaa 8."
+  },
+  {
+    "id": 7,
+    "category": "Mshtuko wa Moyo",
+    "icon": "⚡",
+    "color": "#7c3aed",
+    "signs": [
+      "Kupoteza fahamu ghafla na kushindwa",
+      "Kutetemeka au kusimama bila kudhibiti",
+      "Mkanganyiko au usingizi baada ya tukio"
+    ],
+    "dos": [
+      "Pima muda wa mshtuko — kumbuka unapoanza",
+      "Linda kichwa na mto laini chini yake",
+      "Mgeuze mtu upole upande (nafasi ya kupumzika) baada ya kushindwa kusimama",
+      "Kaa naye mpaka awe macho kamili"
+    ],
+    "donts": [
+      "USIMZUIE mtu au kumshikilia chini",
+      "USIWEKE chochote kinywani mwake",
+      "USIMPE maji au chakula wakati wa au mara baada ya mshtuko"
+    ],
+    "urgent": "Piga simu ya msaada ikiwa: mshtuko unachukua zaidi ya dakika 5, mtu hapati fahamu, huu ni mshtuko wa kwanza, au amiumiwa."
+  },
+  {
+    "id": 8,
+    "category": "Joto Kali la Mwili",
+    "icon": "☀️",
+    "color": "#f59e0b",
+    "signs": [
+      "Joto la mwili zaidi ya nyuzi joto 40°C (104°F)",
+      "Ngozi ya moto na kavu (jasho limeisha)",
+      "Mkanganyiko, usemi usio wazi, au kukosa fahamu"
+    ],
+    "dos": [
+      "Mhamishie mahali pa kivuli au baridi mara moja",
+      "Poza mwili haraka — vitambaa vya mvua shingoni, makwapani, kinoni",
+      "Mpepee kwa nguvu huku ukitumia maji baridi",
+      "Mpe maji baridi ikiwa ana fahamu na anaweza kumeza"
+    ],
+    "donts": [
+      "USIMPE aspirini au paracetamol (haifanyi kazi kwa joto kali)",
+      "USIMWACHE juani au mahali pa joto",
+      "USIMPE maji ikiwa ana fahamu — hatari ya kukosa hewa"
+    ],
+    "urgent": "Joto kali la mwili ni dharura ya maisha. Tafuta msaada wa hospitali mara moja ukiendelea kumpoeza mtu."
+  }
+]

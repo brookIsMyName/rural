@@ -1,0 +1,188 @@
+[
+  {
+    "id": 1,
+    "category": "Gutwika",
+    "icon": "🔥",
+    "color": "#ef4444",
+    "signs": [
+      "Uruhu rw'umutuku, rufite amabuku, cyangwa rwatsi",
+      "Ububabare bukabije cyangwa kutumva",
+      "Kubyimba aho gutwika hageze"
+    ],
+    "dos": [
+      "Subiza aho gutwika hageze amazi atariho ubushyuhe bwinshi (si y'amabuye) iminota 10 kugeza 20",
+      "Funika neza ukoresheje umwenda usukuye udafite ubwoya cyangwa plastike",
+      "Vana inpete cyangwa imyenda yafashe aho gutwika hageze mbere y'uko byimba",
+      "Tanga paracetamol niba ibibazo biri hano"
+    ],
+    "donts": [
+      "NTUKORESHE urubura, amavuta, ubuteye, cyangwa amavuta ku gutwika",
+      "NTUVANE amabuku",
+      "NTUKUREHO imyenda yafashe aho gutwika hageze",
+      "NTUKORESHE pamba ya kashe ku kibikomere"
+    ],
+    "urgent": "Gira ubuvuzi bwa vuba niba gutwika kuri munsi yo gutwika ni binini kuruta ikiganza cyawe, kuri mu maso/amaboko/indangagaciro, cyangwa ni kujya mu nzira kandi nta bububabare (inabi y'inzira z'imyuka)."
+  },
+  {
+    "id": 2,
+    "category": "Amaraso Menshi Asohoka",
+    "icon": "🩸",
+    "color": "#dc2626",
+    "signs": [
+      "Amaraso asiga imyenda",
+      "Ibikomere bidahagara gutakaza amaraso",
+      "Umuntu mweru, ukonje, cyangwa ufite ibibazo by'ubwenge"
+    ],
+    "dos": [
+      "Shyira agaheto gakomeye aho kibikomere neza ukoresheje umwenda usukuye",
+      "Komeza gucinza — ntukureho umwenda (ongeraho undi hejuru niba wasuye amaraso)",
+      "Dura aho gutemwe hejuru y'umutima niba bishoboka",
+      "Umuntu arindire akaguma ari kimwe kandi abe ubushyuhe"
+    ],
+    "donts": [
+      "NTUKUREHO umwenda kugira ngo urebe kibikomere",
+      "NTUKORESHE tourniquet keretse wafashwe kandi gusa ku maguru n'amaboko afite amaraso menshi yica",
+      "NTUMPE ibyo kurya cyangwa amazi niba bashobora gukora ubuvuzi bw'inzara"
+    ],
+    "urgent": "Amaraso menshi yose asaba ubuvuzi bw'ihutirwa bwa kiliniki cyangwa ibitaro. Hamagara inkunga vuba."
+  },
+  {
+    "id": 3,
+    "category": "Gutunga mu Muhogo",
+    "icon": "🫁",
+    "color": "#f97316",
+    "signs": [
+      "Ntashobora kuvuga, gukorora, cyangwa guhumeka",
+      "Afata umuhogo we",
+      "Mu maso hahinduka ubururu cyangwa umutuku"
+    ],
+    "dos": [
+      "Mwumvishe gukorora neza niba ashoboye",
+      "Umubuke inkokora 5 zagize nako hagati y'amafupa y'amagara",
+      "Niba inkokora zidakoze: mubuke inkokora 5 z'inda (Heimlich maneuver)",
+      "Ku bana bato: gusa ukoresheje inkokora nziza zo mu mugongo n'agatima gusa"
+    ],
+    "donts": [
+      "NTUKORE inkokora z'inda ku bana bato bari munsi y'umwaka umwe",
+      "NTUKORE gushyira urutoki mu kanwa k'indorerwamo",
+      "NTUMPE amazi cyangwa ibyo kurya"
+    ],
+    "urgent": "Niba inzira y'umwuka idafunguwe nyuma y'inkokora n'agaheto, hamagara inkunga y'ihutirwa vuba."
+  },
+  {
+    "id": 4,
+    "category": "Guturira",
+    "icon": "😵",
+    "color": "#8b5cf6",
+    "signs": [
+      "Gutakaza ubwenge vuba",
+      "Uruhu rw'umweru kandi rufite ivyi mbere yo guturira",
+      "Umutima udakomeye"
+    ],
+    "dos": [
+      "Ryamisha umuntu inyuma ku mugongo",
+      "Dura amaguru ye cm 30 hejuru y'umutima niba bishoboka",
+      "Fungura imyenda ifashe ku ijosi no mu rukanda",
+      "Muhe umuyaga kandi muvugishe mu mahoro akimara gusubira mu bwenge"
+    ],
+    "donts": [
+      "NTUMPE amazi cyangwa ibyo kurya kugeza azi neza",
+      "NTUMUSIГЕ wenyine",
+      "NTUMUKANGURE vuba vuba"
+    ],
+    "urgent": "Gira ubuvuzi niba umuntu adasubira mu bwenge mu minota 1 kugeza 2, cyangwa niba afite ububabare bw'agatima, ibibazo byo guhumeka, cyangwa guhinda umushyitsi."
+  },
+  {
+    "id": 5,
+    "category": "Guhumwa n'Inzoka",
+    "icon": "🐍",
+    "color": "#16a34a",
+    "signs": [
+      "Inkovu z'amenyo ziboneka",
+      "Kubyimba cyangwa ubururu aho guhumwa",
+      "Isesemi, indwara y'ibizunguzungu, cyangwa ibibazo byo guhumeka"
+    ],
+    "dos": [
+      "Umuntu arindire akaguma ari kimwe — kujya aho no hose bishlesha ubumara vuba",
+      "Komeza igice cy'umubiri cyahumwe kiri munsi cyangwa ku rwego rw'umutima",
+      "Vana isaha, inete, cyangwa imyenda yafashe aho guhumwa hageze",
+      "Genda kwa muganga cyangwa ibitaro vuba ushobora"
+    ],
+    "donts": [
+      "NTUCIRE kibikomere kandi NTAGERAGEZA gukamura ubumara",
+      "NTUKORESHE urubura cyangwa tourniquet",
+      "NTUMPE inzoga cyangwa ibyo kurya",
+      "NTAGERAGEZE gufata inzoka"
+    ],
+    "urgent": "Guhumwa n'inzoka KOSE bigomba gufatwa nk'ihutirwa rya muganga. Genda vuba ku kigo cy'ubuzima gifite imiti y'ubumara."
+  },
+  {
+    "id": 6,
+    "category": "Gutakaza Amazi mu Mubiri",
+    "icon": "💧",
+    "color": "#0ea5e9",
+    "signs": [
+      "Inyota nyinshi n'akanwa gakayuye",
+      "Kutakara nk'amasaha 8 cyangwa menshi",
+      "Amaso aryamye, indwara y'ibizunguzungu, umutima wihuta"
+    ],
+    "dos": [
+      "Tanga ORS (Oral Rehydration Solution) gake gake kenshi",
+      "Niba ORS idahari: tanganya liti 1 y'amazi + inkorora 6 za sukari + inkorora igice cya chumvi",
+      "Komeza gutanga amazi nubwo asesemura — gake kenshi",
+      "Ku bana bato: komeza konsa kandi wongere ORS"
+    ],
+    "donts": [
+      "NTUMPE amazi gusa mu bihe bikomeye (bibura ingenga z'umubiri)",
+      "NTUKORESHE soda cyangwa amashyushyu mu cyimbo",
+      "NTIREBA gutakaza amazi mu bana — bihuta cyane"
+    ],
+    "urgent": "Gira ubuvuzi bw'ihutirwa niba umuntu adashoboye gukomeza amazi, aba ata bwenge, yari kuri fontanelle ifite impemu (bana bato), cyangwa atakaye nk'amasaha 8."
+  },
+  {
+    "id": 7,
+    "category": "Guhinda Umushyitsi",
+    "icon": "⚡",
+    "color": "#7c3aed",
+    "signs": [
+      "Gutakaza ubwenge vuba hamwe n'umushyitsi",
+      "Gutigita cyangwa gushirika bidashobora guhagarikwa",
+      "Ukangara cyangwa utura utuzi nyuma y'ibyabaye"
+    ],
+    "dos": [
+      "Bara igihe cy'umushyitsi — sobanukirwa ubwo watangiriye",
+      "Kurinda umutwe ukoresheje ikintu cyoroshye munsi",
+      "Nyuma y'umushyitsi, hindura umuntu inzira nziza (recovery position)",
+      "Guma nawe kugeza azi neza"
+    ],
+    "donts": [
+      "NTUSHYIRE umuntu agaheto cyangwa ukamugumya",
+      "NTUSHYIRE kintu mu kanwa ke",
+      "NTUMPE amazi cyangwa ibyo kurya mu gihe cya cyangwa vuba nyuma ya"
+    ],
+    "urgent": "Hamagara inkunga niba: umushyitsi urambye iminota 5, umuntu adasubira mu bwenge, ni bwa mbere bigenda, cyangwa yakomekejwe."
+  },
+  {
+    "id": 8,
+    "category": "Gukubitwa n'Ikirere cy'Ishyarira",
+    "icon": "☀️",
+    "color": "#f59e0b",
+    "signs": [
+      "Ubushyuhe bw'umubiri burenze 40°C (104°F)",
+      "Uruhu rw'ubushyuhe kandi rukayuye (guha kwagarutse)",
+      "Ukangara, kuvuga nabi, cyangwa gutakaza ubwenge"
+    ],
+    "dos": [
+      "Muve mu zuba cyangwa aho hashyuha vuba",
+      "Subiza umubiri vuba — imyenda yujujwe amazi ku ijosi, mu bikanu, mu bisinzi",
+      "Muhe umuyaga cyane ukoresheje amazi mato",
+      "Niba azi kandi ashoboye kunywa, muhe amazi mato"
+    ],
+    "donts": [
+      "NTUMPE aspirine cyangwa paracetamol (ntabwo bifasha ikirere cy'ishyarira)",
+      "NTUMSIZE mu zuba cyangwa aho hashyuha",
+      "NTUMPE amazi niba ata bwenge — inzira yo gutanya"
+    ],
+    "urgent": "Gukubitwa n'ikirere cy'ishyarira ni ibyihutirwa bya muganga. Genda ibitaro vuba uri kumsubiza ubushyuhe buke."
+  }
+]

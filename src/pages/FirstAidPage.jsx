@@ -4,15 +4,16 @@ import { useLang }           from "../utils/useLang";
 import { t }                 from "../utils/translate";
 import firstaidBase from "../data/firstaid.json";
 import firstaidExtra from "../data/firstaid_extra.json";
+import firstaidFr from "../data/firstaid_fr.json";
+import firstaidSw from "../data/firstaid_sw.json";
+import firstaidAm from "../data/firstaid_am.json";
+import firstaidRw from "../data/firstaid_rw.json";
 
 const ALL_FIRSTAID = [...firstaidBase, ...firstaidExtra];
-
-const CATEGORIES = [
-  { key: "all",       label: "All" },
-  { key: "emergency", label: "🔴 Emergency" },
-  { key: "common",    label: "🟡 Common" },
-  { key: "chronic",   label: "🟢 Chronic" },
-];
+const ALL_FIRSTAID_FR = [...firstaidFr, ...firstaidExtra];
+const ALL_FIRSTAID_SW = [...firstaidSw, ...firstaidExtra];
+const ALL_FIRSTAID_AM = [...firstaidAm, ...firstaidExtra];
+const ALL_FIRSTAID_RW = [...firstaidRw, ...firstaidExtra];
 
 // Tag each entry so we can category-filter
 const EMERGENCY_IDS = [2, 3, 5, 9, 11, 13, 14, 15]; // Bleeding, Choking, Snake, Drowning, Allergy, Chest, Head, Poison
@@ -25,18 +26,43 @@ function tagCategory(id) {
 }
 
 export default function FirstAidPage() {
-  useLang();
+  const { lang } = useLang();
   const [search,   setSearch]   = useState("");
   const [expanded, setExpanded] = useState(null);
   const [catTab,   setCatTab]   = useState("all");
 
+  const firstAidData = useMemo(() => {
+    switch (lang) {
+      case "fr":
+        return ALL_FIRSTAID_FR;
+      case "sw":
+        return ALL_FIRSTAID_SW;
+      case "am":
+        return ALL_FIRSTAID_AM;
+      case "rw":
+        return ALL_FIRSTAID_RW;
+      default:
+        return ALL_FIRSTAID;
+    }
+  }, [lang]);
+
+  const categories = useMemo(
+    () => [
+      { key: "all",       label: t("all") },
+      { key: "emergency", label: `🔴 ${t("emergency")}` },
+      { key: "common",    label: `🟡 ${t("common")}` },
+      { key: "chronic",   label: `🟢 ${t("chronic")}` },
+    ],
+    [lang],
+  );
+
   const filtered = useMemo(() => {
-    return ALL_FIRSTAID.filter((f) => {
+    return firstAidData.filter((f) => {
       const matchSearch = f.category.toLowerCase().includes(search.toLowerCase());
       const matchCat    = catTab === "all" || tagCategory(f.id) === catTab;
       return matchSearch && matchCat;
     });
-  }, [search, catTab]);
+  }, [firstAidData, search, catTab]);
 
   return (
     <div style={{ minHeight: "100vh", paddingTop: 80, padding: "80px 20px 40px", maxWidth: 920, margin: "0 auto" }}>
@@ -50,24 +76,24 @@ export default function FirstAidPage() {
       {/* Header */}
       <div style={{ textAlign: "center", marginBottom: 36 }}>
         <h1 style={{ fontFamily: "'Playfair Display',serif", color: "#fff", fontSize: "clamp(24px,4vw,36px)", marginBottom: 10 }}>
-          {t("firstAid")} Guide
+          {t("firstAid")} {t("guide")}
         </h1>
         <p style={{ color: "rgba(255,255,255,0.4)", fontFamily: "'DM Sans',sans-serif", fontSize: 15, marginBottom: 24 }}>
-          {ALL_FIRSTAID.length} emergency situations covered. Simple. Clear. Accessible.
+          {firstAidData.length} {t("emergencySituationsCovered")}
         </p>
 
         {/* Search */}
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search (e.g. burns, snake bite, chest pain...)"
+          placeholder={t("firstAidSearchPlaceholder")}
           className="search-input"
           style={{ width: "100%", maxWidth: 460, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 12, padding: "12px 18px", color: "#fff", fontFamily: "'DM Sans',sans-serif", fontSize: 14, transition: "border-color 0.2s" }}
         />
 
         {/* Category tabs */}
         <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginTop: 16 }}>
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <button key={c.key} onClick={() => setCatTab(c.key)} style={{ background: catTab === c.key ? "rgba(16,185,129,0.15)" : "rgba(255,255,255,0.04)", border: `1px solid ${catTab === c.key ? "rgba(16,185,129,0.4)" : "rgba(255,255,255,0.1)"}`, borderRadius: 8, padding: "6px 16px", color: catTab === c.key ? "#10b981" : "rgba(255,255,255,0.5)", fontFamily: "'DM Sans',sans-serif", fontSize: 13, cursor: "pointer", fontWeight: catTab === c.key ? 600 : 400 }}>
               {c.label}
             </button>
@@ -92,8 +118,11 @@ export default function FirstAidPage() {
                   <div style={{ textAlign: "left" }}>
                     <span style={{ color: "#fff", fontFamily: "'DM Sans',sans-serif", fontWeight: 600, fontSize: 16, display: "block" }}>{f.category}</span>
                     <span style={{ color: catColor, fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 600, letterSpacing: "0.05em" }}>
-                      {cat === "emergency" ? "🔴 EMERGENCY" : cat === "chronic" ? "🟢 CHRONIC" : "🟡 COMMON"}
-                    </span>
+{cat === "emergency"
+  ? `🔴 ${t("emergency")}`
+  : cat === "chronic"
+  ? `🟢 ${t("chronic")}`
+  : `🟡 ${t("common")}`}                    </span>
                   </div>
                 </div>
                 <span style={{ color: "rgba(255,255,255,0.35)", fontSize: 16, transition: "transform 0.2s", display: "inline-block", transform: isOpen ? "rotate(180deg)" : "none" }}>▼</span>
@@ -105,7 +134,7 @@ export default function FirstAidPage() {
 
                   {/* Signs */}
                   <div style={{ background: `${f.color}0d`, border: `1px solid ${f.color}25`, borderRadius: 10, padding: "12px 16px" }}>
-                    <div style={{ color: f.color, fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, marginBottom: 8, letterSpacing: "0.05em" }}>⚠️ RECOGNIZE THE SIGNS</div>
+                    <div style={{ color: f.color, fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, marginBottom: 8, letterSpacing: "0.05em" }}>⚠️ {t("recognizeSigns")}</div>
                     <ul style={{ margin: 0, paddingLeft: 16 }}>
                       {f.signs.map((s, i) => <li key={i} style={{ color: "rgba(255,255,255,0.65)", fontSize: 13.5, fontFamily: "'DM Sans',sans-serif", lineHeight: 1.65, marginBottom: 4 }}>{s}</li>)}
                     </ul>
@@ -114,13 +143,13 @@ export default function FirstAidPage() {
                   {/* Do's and Don'ts */}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     <div style={{ background: "rgba(34,197,94,0.07)", border: "1px solid rgba(34,197,94,0.18)", borderRadius: 12, padding: "14px" }}>
-                      <div style={{ color: "#22c55e", fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, marginBottom: 8, letterSpacing: "0.05em" }}>✅ WHAT TO DO</div>
+                      <div style={{ color: "#22c55e", fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, marginBottom: 8, letterSpacing: "0.05em" }}>✅ {t("whatToDo")}</div>
                       <ul style={{ margin: 0, paddingLeft: 16 }}>
                         {f.dos.map((d, i) => <li key={i} style={{ color: "rgba(255,255,255,0.65)", fontSize: 13, fontFamily: "'DM Sans',sans-serif", lineHeight: 1.65, marginBottom: 5 }}>{d}</li>)}
                       </ul>
                     </div>
                     <div style={{ background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.18)", borderRadius: 12, padding: "14px" }}>
-                      <div style={{ color: "#ef4444", fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, marginBottom: 8, letterSpacing: "0.05em" }}>❌ WHAT NOT TO DO</div>
+                      <div style={{ color: "#ef4444", fontSize: 11, fontFamily: "'DM Sans',sans-serif", fontWeight: 700, marginBottom: 8, letterSpacing: "0.05em" }}>❌ {t("whatNotToDo")}</div>
                       <ul style={{ margin: 0, paddingLeft: 16 }}>
                         {f.donts.map((d, i) => <li key={i} style={{ color: "rgba(255,255,255,0.65)", fontSize: 13, fontFamily: "'DM Sans',sans-serif", lineHeight: 1.65, marginBottom: 5 }}>{d}</li>)}
                       </ul>
@@ -131,7 +160,7 @@ export default function FirstAidPage() {
                   <div style={{ background: `${f.color}12`, border: `1px solid ${f.color}28`, borderRadius: 10, padding: "12px 16px", display: "flex", gap: 10, alignItems: "flex-start" }}>
                     <span style={{ fontSize: 18, flexShrink: 0 }}>🚨</span>
                     <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 13, fontFamily: "'DM Sans',sans-serif", lineHeight: 1.6, margin: 0 }}>
-                      <strong style={{ color: f.color }}>When to seek urgent care: </strong>{f.urgent}
+                      <strong style={{ color: f.color }}>{t("whenToSeekUrgentCare")}: </strong>{f.urgent}
                     </p>
                   </div>
 
@@ -143,7 +172,7 @@ export default function FirstAidPage() {
 
         {filtered.length === 0 && (
           <p style={{ color: "rgba(255,255,255,0.25)", textAlign: "center", fontFamily: "'DM Sans',sans-serif", padding: 48 }}>
-            No results for "{search}"
+            {t("noResultsFor")} "{search}"
           </p>
         )}
       </div>

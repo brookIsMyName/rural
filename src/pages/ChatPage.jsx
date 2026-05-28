@@ -22,6 +22,7 @@ import {
 } from "../services/chatService";
 
 export default function ChatPage({ user }) {
+  const NAV_HEIGHT = 62;
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   const [messages, setMessages] = useState([]);
@@ -41,6 +42,13 @@ const isPlayingRef = useRef(false);
   const recognitionRef = useRef(null);
 
   const { lang } = useLang();
+
+  const normalizeAssistantContent = (text = "") =>
+    text
+      .replace(/\r\n/g, "\n")
+      .replace(/[ \t]+\n/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
 
   const getInitialMessage = () => [
     {
@@ -344,7 +352,7 @@ const toggleListening = () => {
 
       if (
         currentConvo &&
-        (!currentConvo.title || currentConvo.title === "New Chat")
+        (!currentConvo.title || currentConvo.title === t("newChat"))
       ) {
         const title = text.slice(0, 40);
 
@@ -376,7 +384,7 @@ const toggleListening = () => {
 
       const assistantMessage = {
         role: "assistant",
-        content: cleaned,
+        content: normalizeAssistantContent(cleaned),
         urgency,
       };
 
@@ -411,9 +419,10 @@ const toggleListening = () => {
     <div
       style={{
         minHeight: "100vh",
-        display: "flex",
         background: "#07110f",
         overflow: "hidden",
+        paddingTop: NAV_HEIGHT,
+        position: "relative",
       }}
     >
       {/* SIDEBAR */}
@@ -422,13 +431,15 @@ const toggleListening = () => {
         style={{
           width: isMobile ? 260 : sidebarOpen ? 280 : 0,
 
-          position: isMobile ? "fixed" : "relative",
+          position: "fixed",
 
-          left: isMobile && !sidebarOpen ? -280 : 0,
+          left: isMobile ? (sidebarOpen ? 0 : -280) : 0,
 
-          top: 62,
+          top: NAV_HEIGHT,
 
-          height: "calc(100vh - 62px)",
+          height: isMobile
+            ? `calc(100vh - ${NAV_HEIGHT}px)`
+            : `calc(100vh - ${NAV_HEIGHT}px)`,
 
           zIndex: 1000,
 
@@ -481,7 +492,7 @@ const toggleListening = () => {
               fontSize: 14,
             }}
           >
-            + New Chat
+            + {t("newChat")}
           </button>
         </div>
 
@@ -520,7 +531,7 @@ const toggleListening = () => {
                   textOverflow: "ellipsis",
                 }}
               >
-                {convo.title || "New Chat"}
+                {convo.title || t("newChat")}
               </div>
             </button>
           ))}
@@ -531,12 +542,13 @@ const toggleListening = () => {
 
       <div
         style={{
-          flex: 1,
           display: "flex",
           flexDirection: "column",
           minWidth: 0,
           position: "relative",
-          paddingTop: 62,
+          marginLeft: isMobile ? 0 : sidebarOpen ? 280 : 0,
+          width: isMobile ? "100%" : sidebarOpen ? "calc(100% - 280px)" : "100%",
+          transition: "margin-left 0.25s ease, width 0.25s ease",
         }}
       >
         {/* TOP BAR */}
@@ -560,6 +572,7 @@ const toggleListening = () => {
               color: "#fff",
               cursor: "pointer",
               fontSize: 18,
+              position: "fixed",
               flexShrink: 0,
             }}
           >
@@ -674,12 +687,15 @@ const toggleListening = () => {
                       fontSize: 14,
                       lineHeight: 1.7,
                       letterSpacing: "0.1px",
-                      whiteSpace: "pre-wrap",
+                      whiteSpace:
+                        m.role === "assistant" ? "normal" : "pre-wrap",
                     }}
                   >
                     {m.role === "assistant" ? (
                       <div className="markdown-content">
-                        <ReactMarkdown>{m.content}</ReactMarkdown>
+                        <ReactMarkdown>
+                          {normalizeAssistantContent(m.content)}
+                        </ReactMarkdown>
                       </div>
                     ) : (
                       m.content
@@ -807,6 +823,7 @@ const toggleListening = () => {
               display: "flex",
               gap: 8,
               flexWrap: "wrap",
+              margin: "auto",
               padding: "0 24px 12px",
             }}
           >

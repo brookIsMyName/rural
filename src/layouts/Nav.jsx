@@ -310,7 +310,7 @@ export default function Nav({
                     fontSize: 13,
                   }}
                 >
-                  More ▾
+                  {t("more")} ▾
                 </button>
 
                 {moreOpen && (
@@ -369,13 +369,6 @@ export default function Nav({
                         label:
                           t(
                             "alerts"
-                          ),
-                      },
-                      {
-                        id: "ContactPage",
-                        label:
-                          t(
-                            "ContactPage"
                           ),
                       },
                     ].map((item) => (
