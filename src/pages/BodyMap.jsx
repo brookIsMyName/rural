@@ -2,13 +2,19 @@
 import { useEffect, useState } from "react";
 import { bodyRegions } from "../data/bodyMapData";
 import { API_BASE } from "../config/api";
-import { sendMessage, parseUrgency, stripUrgencyLine } from "../services/claudeApi";
+import {
+  sendMessage,
+  parseUrgency,
+  stripUrgencyLine,
+} from "../services/claudeApi";
 
 const panelStyle = {
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: 24,
   padding: 24,
+  minWidth: 0,
+  boxSizing: "border-box",
 };
 
 function formatDate(date) {
@@ -46,7 +52,9 @@ export default function BodyMap() {
     if (!token) {
       setReports([]);
       setLoadingReports(false);
-      setStatus("Please sign in to save and view your symptom reports.");
+      setStatus(
+        "Please sign in to save and view your symptom reports."
+      );
       return;
     }
 
@@ -69,7 +77,9 @@ export default function BodyMap() {
 
       setReports(data.reports || []);
     } catch (error) {
-      setStatus(error.message || "Unable to load symptom reports.");
+      setStatus(
+        error.message || "Unable to load symptom reports."
+      );
     } finally {
       setLoadingReports(false);
     }
@@ -151,12 +161,16 @@ export default function BodyMap() {
 
       setReports((prev) => [
         data.report,
-        ...prev.filter((report) => report._id !== data.report._id),
+        ...prev.filter(
+          (report) => report._id !== data.report._id
+        ),
       ]);
 
       setStatus("Your symptom report was saved successfully.");
     } catch (error) {
-      setStatus(error.message || "Submission failed. Please try again.");
+      setStatus(
+        error.message || "Submission failed. Please try again."
+      );
     } finally {
       setSaving(false);
     }
@@ -169,7 +183,7 @@ export default function BodyMap() {
     setAiError("");
     setAiUrgency(null);
 
-    const symptomDetails = report.symptoms
+    const symptomDetails = (report.symptoms || [])
       .map(
         (symptom) =>
           `Body region: ${symptom.bodyPart}\n` +
@@ -179,24 +193,30 @@ export default function BodyMap() {
       .join("\n\n");
 
     const prompt = `
-Help the user understand the following self-reported symptoms and
-consider appropriate next steps.
+You are a cautious health information assistant for SalviaHealth.
+
+Help the user understand their self-reported symptoms and decide on appropriate next steps. Do not diagnose or invent medical facts.
+
+Keep your entire response concise, ideally under 150 words.
+
+Use this exact structure, with a blank line between sections:
+
+WHAT THIS COULD MEAN
+Briefly explain that symptoms can have different causes. Avoid listing many possible conditions.
+
+WHAT TO DO NOW
+Give 1–3 practical, safe steps.
+
+WHEN TO SEEK CARE
+Explain the appropriate level of care. If symptoms suggest an emergency, clearly advise emergency medical care. Do not delay urgent care by asking questions.
+
+QUESTIONS
+Ask at most two important follow-up questions, only if useful.
+
+Use short sentences, plain language, and readable paragraphs. Do not repeat the user's question or add a long introduction. Keep the advice appropriate to the reported symptoms and their severity.
 
 Reported symptoms:
 ${symptomDetails}
-
-Give general health information, not a diagnosis. Explain relevant
-uncertainty and ask clarifying questions when important information
-is missing. Recommend an appropriate level of care based on the
-information provided. Do not assume that a body region or severity
-score establishes a particular condition.
-
-If symptoms suggest an immediate medical emergency, clearly advise
-the user to seek emergency medical care. Do not delay urgent care
-by asking them to continue chatting.
-
-Be concise, empathetic, and use plain language. Do not invent
-medical history, measurements, or examination findings.
 `.trim();
 
     try {
@@ -211,7 +231,8 @@ medical history, measurements, or examination findings.
       setAiGuidance(stripUrgencyLine(answer));
     } catch (error) {
       setAiError(
-        error.message || "Unable to get AI guidance right now."
+        error.message ||
+          "Unable to get AI guidance right now."
       );
     } finally {
       setAiLoading(false);
@@ -228,15 +249,18 @@ medical history, measurements, or examination findings.
         paddingBottom: 40,
         paddingLeft: 20,
         paddingRight: 20,
+        boxSizing: "border-box",
       }}
     >
       <div
         style={{
+          width: "100%",
           maxWidth: 1200,
           margin: "0 auto",
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
-          gap: 30,
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+          gap: 24,
           alignItems: "start",
         }}
       >
@@ -249,19 +273,30 @@ medical history, measurements, or examination findings.
             padding: 20,
           }}
         >
-          <h2 style={{ marginTop: 0, marginBottom: 20, fontSize: 28 }}>
+          <h2
+            style={{
+              marginTop: 0,
+              marginBottom: 20,
+              fontSize: 28,
+            }}
+          >
             Symptom Body Map
           </h2>
 
           <p style={{ color: "rgba(255,255,255,0.65)" }}>
-            Select the body regions where you are experiencing symptoms.
+            Select the body regions where you are experiencing
+            symptoms.
           </p>
 
           <svg
             viewBox="0 0 400 600"
             role="group"
             aria-label="Interactive body map"
-            style={{ width: "100%", height: "auto" }}
+            style={{
+              display: "block",
+              width: "100%",
+              height: "auto",
+            }}
           >
             {bodyRegions.map((region) => {
               const selected = selectedParts.includes(region.id);
@@ -277,12 +312,17 @@ medical history, measurements, or examination findings.
                   tabIndex={0}
                   onClick={() => togglePart(region.id)}
                   onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
+                    if (
+                      event.key === "Enter" ||
+                      event.key === " "
+                    ) {
                       event.preventDefault();
                       togglePart(region.id);
                     }
                   }}
-                  onMouseEnter={() => setHoveredPart(region.id)}
+                  onMouseEnter={() =>
+                    setHoveredPart(region.id)
+                  }
                   onMouseLeave={() => setHoveredPart(null)}
                   style={{
                     fill: selected
@@ -303,16 +343,32 @@ medical history, measurements, or examination findings.
             })}
           </svg>
 
-          <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 13 }}>
+          <p
+            style={{
+              color: "rgba(255,255,255,0.55)",
+              fontSize: 13,
+            }}
+          >
             Selected regions: {selectedParts.length}
           </p>
         </div>
 
-        {/* NEW REPORT FORM */}
+        {/* NEW REPORT FORM AND SAVED REPORTS */}
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 18,
+            minWidth: 0,
+          }}
+        >
+          {/* SELECTED SYMPTOMS */}
+
           <div style={panelStyle}>
-            <h2 style={{ marginTop: 0 }}>Selected Symptoms</h2>
+            <h2 style={{ marginTop: 0 }}>
+              Selected Symptoms
+            </h2>
 
             {selectedParts.length === 0 && (
               <p style={{ color: "rgba(255,255,255,0.5)" }}>
@@ -326,7 +382,8 @@ medical history, measurements, or examination findings.
                 style={{
                   marginBottom: 24,
                   paddingBottom: 24,
-                  borderBottom: "1px solid rgba(255,255,255,0.08)",
+                  borderBottom:
+                    "1px solid rgba(255,255,255,0.08)",
                 }}
               >
                 <h3 style={{ textTransform: "capitalize" }}>
@@ -362,11 +419,13 @@ medical history, measurements, or examination findings.
                     marginTop: 14,
                     minHeight: 90,
                     borderRadius: 14,
-                    border: "1px solid rgba(255,255,255,0.1)",
+                    border:
+                      "1px solid rgba(255,255,255,0.1)",
                     background: "rgba(255,255,255,0.04)",
                     color: "#fff",
                     padding: 14,
                     resize: "vertical",
+                    font: "inherit",
                   }}
                 />
 
@@ -376,7 +435,8 @@ medical history, measurements, or examination findings.
                   style={{
                     marginTop: 8,
                     background: "transparent",
-                    border: "1px solid rgba(255,255,255,0.2)",
+                    border:
+                      "1px solid rgba(255,255,255,0.2)",
                     borderRadius: 8,
                     color: "#fff",
                     padding: "7px 12px",
@@ -407,7 +467,9 @@ medical history, measurements, or examination findings.
                   cursor: saving ? "wait" : "pointer",
                 }}
               >
-                {saving ? "Saving report..." : "Save Symptom Report"}
+                {saving
+                  ? "Saving report..."
+                  : "Save Symptom Report"}
               </button>
             )}
 
@@ -419,6 +481,7 @@ medical history, measurements, or examination findings.
                   color: status.includes("successfully")
                     ? "#6ee7b7"
                     : "#fbbf24",
+                  overflowWrap: "anywhere",
                 }}
               >
                 {status}
@@ -438,7 +501,9 @@ medical history, measurements, or examination findings.
                 flexWrap: "wrap",
               }}
             >
-              <h2 style={{ marginTop: 0 }}>Your Saved Reports</h2>
+              <h2 style={{ marginTop: 0, marginBottom: 0 }}>
+                Your Saved Reports
+              </h2>
 
               <button
                 type="button"
@@ -447,7 +512,8 @@ medical history, measurements, or examination findings.
                 style={{
                   padding: "8px 12px",
                   borderRadius: 10,
-                  border: "1px solid rgba(255,255,255,0.15)",
+                  border:
+                    "1px solid rgba(255,255,255,0.15)",
                   background: "transparent",
                   color: "#fff",
                   cursor: loadingReports ? "wait" : "pointer",
@@ -457,12 +523,14 @@ medical history, measurements, or examination findings.
               </button>
             </div>
 
-            {loadingReports && <p>Loading your reports...</p>}
+            {loadingReports && (
+              <p>Loading your reports...</p>
+            )}
 
             {!loadingReports && reports.length === 0 && (
               <p style={{ color: "rgba(255,255,255,0.55)" }}>
-                No saved reports yet. Your successfully saved reports will
-                appear here.
+                No saved reports yet. Your successfully saved
+                reports will appear here.
               </p>
             )}
 
@@ -473,36 +541,53 @@ medical history, measurements, or examination findings.
                   marginTop: 16,
                   padding: 16,
                   borderRadius: 14,
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  border:
+                    "1px solid rgba(255,255,255,0.1)",
                   background: "rgba(255,255,255,0.025)",
+                  minWidth: 0,
+                  overflowWrap: "anywhere",
                 }}
               >
-                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13 }}>
+                <p
+                  style={{
+                    color: "rgba(255,255,255,0.6)",
+                    fontSize: 13,
+                  }}
+                >
                   {formatDate(report.createdAt)}
                 </p>
 
-                {(report.symptoms || []).map((symptom, index) => (
-                  <div key={`${report._id}-${index}`} style={{ marginBottom: 12 }}>
-                    <strong style={{ textTransform: "capitalize" }}>
-                      {symptom.bodyPart.replaceAll("-", " ")}
-                    </strong>
-                    <p style={{ margin: "5px 0" }}>
-                      Reported severity: {symptom.severity}/10
-                    </p>
-                    {symptom.notes && (
-                      <p
-                        style={{
-                          margin: "5px 0",
-                          color: "rgba(255,255,255,0.7)",
-                          whiteSpace: "pre-wrap",
-                          overflowWrap: "anywhere",
-                        }}
+                {(report.symptoms || []).map(
+                  (symptom, index) => (
+                    <div
+                      key={`${report._id}-${index}`}
+                      style={{ marginBottom: 12 }}
+                    >
+                      <strong
+                        style={{ textTransform: "capitalize" }}
                       >
-                        {symptom.notes}
+                        {symptom.bodyPart.replaceAll("-", " ")}
+                      </strong>
+
+                      <p style={{ margin: "5px 0" }}>
+                        Reported severity: {symptom.severity}/10
                       </p>
-                    )}
-                  </div>
-                ))}
+
+                      {symptom.notes && (
+                        <p
+                          style={{
+                            margin: "5px 0",
+                            color: "rgba(255,255,255,0.7)",
+                            whiteSpace: "pre-wrap",
+                            overflowWrap: "anywhere",
+                          }}
+                        >
+                          {symptom.notes}
+                        </p>
+                      )}
+                    </div>
+                  )
+                )}
 
                 <button
                   type="button"
@@ -517,73 +602,196 @@ medical history, measurements, or examination findings.
                     color: "#fff",
                     fontWeight: 600,
                     cursor: aiLoading ? "wait" : "pointer",
+                    maxWidth: "100%",
                   }}
                 >
                   {aiLoading && aiReportId === report._id
                     ? "Getting guidance..."
                     : "Ask AI about this report"}
                 </button>
-
-                {aiReportId === report._id && aiLoading && (
-                  <p role="status">Reviewing the information you provided...</p>
-                )}
-
-                {aiReportId === report._id && aiError && (
-                  <p role="alert" style={{ color: "#fbbf24" }}>
-                    {aiError}
-                  </p>
-                )}
-
-                {aiReportId === report._id && aiUrgency && (
-                  <p
-                    style={{
-                      marginTop: 14,
-                      padding: 12,
-                      borderRadius: 10,
-                      background: "rgba(255,255,255,0.06)",
-                      color: aiUrgency.level === "emergency"
-                        ? "#fca5a5"
-                        : aiUrgency.level === "clinic"
-                          ? "#fcd34d"
-                          : "#6ee7b7",
-                    }}
-                  >
-                    {aiUrgency.icon} {aiUrgency.label}
-                  </p>
-                )}
-
-                {aiReportId === report._id && aiGuidance && (
-                  <div
-                    style={{
-                      marginTop: 14,
-                      padding: 16,
-                      borderRadius: 12,
-                      background: "rgba(16,185,129,0.08)",
-                      border: "1px solid rgba(16,185,129,0.2)",
-                      whiteSpace: "pre-wrap",
-                      overflowWrap: "anywhere",
-                      lineHeight: 1.6,
-                    }}
-                  >
-                    <h3 style={{ marginTop: 0 }}>AI Health Guidance</h3>
-                    {aiGuidance}
-                    <p
-                      style={{
-                        marginBottom: 0,
-                        fontSize: 12,
-                        color: "rgba(255,255,255,0.55)",
-                      }}
-                    >
-                      AI guidance can be inaccurate and is not a medical
-                      diagnosis. Seek a qualified health professional for
-                      medical advice.
-                    </p>
-                  </div>
-                )}
               </div>
             ))}
           </div>
         </div>
+
+        {/* FULL-WIDTH AI GUIDANCE PANEL */}
+
+        {aiReportId && (
+          <div
+            style={{
+              gridColumn: "1 / -1",
+              width: "100%",
+              minWidth: 0,
+              boxSizing: "border-box",
+              ...panelStyle,
+              padding: "clamp(18px, 3vw, 32px)",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                maxWidth: 850,
+                minWidth: 0,
+                margin: "0 auto",
+              }}
+            >
+              <h2
+                style={{
+                  marginTop: 0,
+                  marginBottom: 8,
+                  fontSize: 25,
+                }}
+              >
+                AI Health Guidance
+              </h2>
+
+              <p
+                style={{
+                  marginTop: 0,
+                  marginBottom: 24,
+                  color: "rgba(255,255,255,0.55)",
+                  fontSize: 14,
+                }}
+              >
+                General information based on your saved symptom
+                report.
+              </p>
+
+              {aiLoading && (
+                <div
+                  role="status"
+                  style={{
+                    padding: 18,
+                    borderRadius: 12,
+                    background: "rgba(255,255,255,0.04)",
+                    color: "#a7f3d0",
+                    lineHeight: 1.7,
+                  }}
+                >
+                  Reviewing your report and preparing guidance...
+                </div>
+              )}
+
+              {!aiLoading && aiError && (
+                <div
+                  role="alert"
+                  style={{
+                    padding: 16,
+                    borderRadius: 12,
+                    border: "1px solid rgba(251,191,36,0.25)",
+                    background: "rgba(251,191,36,0.07)",
+                    color: "#fcd34d",
+                    lineHeight: 1.7,
+                  }}
+                >
+                  {aiError}
+                </div>
+              )}
+
+              {!aiLoading && aiUrgency && (
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    maxWidth: "100%",
+                    boxSizing: "border-box",
+                    marginBottom: 24,
+                    padding: "12px 16px",
+                    borderRadius: 12,
+                    background: "rgba(255,255,255,0.06)",
+                    color:
+                      aiUrgency.level === "emergency"
+                        ? "#fca5a5"
+                        : aiUrgency.level === "clinic"
+                          ? "#fcd34d"
+                          : "#6ee7b7",
+                    fontWeight: 700,
+                    overflowWrap: "anywhere",
+                  }}
+                >
+                  {aiUrgency.icon} {aiUrgency.label}
+                </div>
+              )}
+
+              {!aiLoading && aiGuidance && (
+                <div
+                  style={{
+                    width: "100%",
+                    minWidth: 0,
+                    boxSizing: "border-box",
+                    padding: "clamp(16px, 2.5vw, 26px)",
+                    borderRadius: 16,
+                    background: "rgba(16,185,129,0.06)",
+                    border:
+                      "1px solid rgba(16,185,129,0.18)",
+                    color: "rgba(255,255,255,0.88)",
+                    fontSize: 16,
+                    lineHeight: 1.8,
+                    overflowWrap: "anywhere",
+                  }}
+                >
+                  {aiGuidance
+                    .split(/\n\s*\n/)
+                    .map((paragraph) => paragraph.trim())
+                    .filter(Boolean)
+                    .map((paragraph, index) => {
+                      const isHeading =
+                        /^(WHAT THIS COULD MEAN|WHAT TO DO NOW|WHEN TO SEEK CARE|QUESTIONS)\s*:?\s*$/i.test(
+                          paragraph
+                        );
+
+                      if (isHeading) {
+                        return (
+                          <h3
+                            key={index}
+                            style={{
+                              marginTop: index === 0 ? 0 : 26,
+                              marginBottom: 8,
+                              fontSize: 14,
+                              lineHeight: 1.5,
+                              letterSpacing: "0.07em",
+                              color: "#6ee7b7",
+                            }}
+                          >
+                            {paragraph.replace(/:$/, "")}
+                          </h3>
+                        );
+                      }
+
+                      return (
+                        <p
+                          key={index}
+                          style={{
+                            margin: "0 0 16px",
+                            whiteSpace: "pre-wrap",
+                          }}
+                        >
+                          {paragraph}
+                        </p>
+                      );
+                    })}
+
+                  <div
+                    style={{
+                      marginTop: 28,
+                      paddingTop: 16,
+                      borderTop:
+                        "1px solid rgba(255,255,255,0.1)",
+                      fontSize: 13,
+                      lineHeight: 1.7,
+                      color: "rgba(255,255,255,0.55)",
+                    }}
+                  >
+                    AI guidance can be inaccurate and is not a
+                    medical diagnosis. Seek a qualified health
+                    professional for medical advice.
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
