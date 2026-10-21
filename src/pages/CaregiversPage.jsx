@@ -25,52 +25,51 @@ function normalize(value) {
 
 // Filter facilities by the known city, region, and country.
 // Nationwide resources and hotlines can remain visible.
+
+function normalize(value) {
+  return String(value ?? "").trim().toLowerCase();
+}
+
 function filterByLocation(list, loc) {
-  if (!loc?.city && !loc?.country && !loc?.region) {
-    return list;
-  }
+  if (!loc?.country) return list;
 
-  const locationWords = [
-    loc.city,
-    loc.region,
-    loc.country,
-  ]
-    .filter(Boolean)
-    .map(normalize)
-    .filter((word) => word.length > 2);
+  const userCountry = normalize(loc.country);
+  const userCity = normalize(loc.city);
+  const userRegion = normalize(loc.region);
 
-  const national = list.filter(
-    (item) => item.type === "Hotline" || item.nationwide
-  );
+  return list.filter((item) => {
+    const facilityCountry = normalize(item.country);
 
-  const matched = list.filter((item) => {
-    // Keep nationwide services even if they have no location match.
+    // Without a country field, we cannot reliably determine
+    // whether a facility belongs to the user's country.
+    if (!facilityCountry || facilityCountry !== userCountry) {
+      return false;
+    }
+
+    // National services are eligible only in their own country.
     if (item.type === "Hotline" || item.nationwide) {
       return true;
     }
 
-    const searchableText = [
-      item.region,
-      item.name,
-      item.country,
-      item.city,
-    ]
-      .filter(Boolean)
-      .map(normalize)
-      .join(" ");
-
-    // Avoid treating a broad country match as proof of proximity.
-    return locationWords.some((word) =>
-      searchableText.includes(word)
+    const facilityLocation = normalize(
+      `${item.city ?? ""} ${item.region ?? ""}`
     );
-  });
 
-  return [
-    ...new Map(
-      [...matched, ...national].map((item) => [item.id, item])
-    ).values(),
-  ];
+    // Prefer city/region matches within the correct country.
+    if (userCity && facilityLocation.includes(userCity)) {
+      return true;
+    }
+
+    if (userRegion && facilityLocation.includes(userRegion)) {
+      return true;
+    }
+
+    // If the facility is in the correct country but lacks
+    // city/region details, keep it without claiming proximity.
+    return !item.city && !item.region;
+  });
 }
+
 
 // Haversine distance in kilometres.
 function distKm(lat1, lng1, lat2, lng2) {
