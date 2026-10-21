@@ -1,68 +1,128 @@
+
 // server/services/claudeApiServer.js
-// Backend-only Claude service for WhatsApp bot
-// Uses process.env — NOT import.meta.env
+// Backend-only Gemini service for WhatsApp and website chat.
+// Uses process.env — NOT import.meta.env.
+
 import { GoogleGenAI } from "@google/genai";
 
-const apiKey = process.env.GEMINI_API_KEY;
-
-if (!apiKey) {
-  throw new Error("GEMINI_API_KEY not found in server/.env");
-}
-
-const ai = new GoogleGenAI({ apiKey });
-
-const SYSTEM_PROMPT = `You are RuralCare AI — a compassionate healthcare guidance assistant for WhatsApp.
+const WHATSAPP_SYSTEM_PROMPT = `You are RuralCare AI — a compassionate healthcare guidance assistant for WhatsApp.
 You help people in rural Africa understand symptoms, assess urgency, and find the right care.
 
-RULES (WhatsApp — mobile first):
-- Keep responses concise and easy to read on a small screen
-- Use short paragraphs, not walls of text
-- Be warm and human, not clinical
-- Always end with exactly one urgency line
+RULES:
+- Keep responses concise and easy to read on a small screen.
+- Use short paragraphs and simple language.
+- Be warm and human, not clinical.
+- Never give a definitive diagnosis.
+- Never recommend specific drug dosages.
+- Recommend professional care for serious symptoms.
+- End with exactly one appropriate urgency line.
 
-URGENCY LEVELS — always include one at the very end:
-🔴 EMERGENCY — Seek immediate medical care now
-🟡 CLINIC VISIT — Visit a clinic within 24–48 hours
-🟢 HOME CARE — Can be managed at home with guidance
-
-End your response with exactly one line matching the appropriate urgency level:
+Choose the urgency level based on the symptoms described:
 URGENCY: 🔴 EMERGENCY
 URGENCY: 🟡 CLINIC VISIT RECOMMENDED
 URGENCY: 🟢 HOME CARE
 
-Choose the level based on the symptoms described. When symptoms suggest a potentially life-threatening emergency, prioritize immediate emergency care.
+When symptoms suggest a potentially life-threatening emergency, prioritize immediate emergency care.`;
 
-STRICT RULES:
-- Never give a definitive diagnosis
-- Never recommend specific drug dosages
-- Always recommend professional care for serious symptoms`;
+const WEBSITE_SYSTEM_PROMPT = `You are Salvia AI — a compassionate healthcare guidance assistant serving communities in Africa.
+Help users understand symptoms and general health topics using clear, accessible language.
 
-export async function sendWhatsAppMessage(messages) {
-  const conversation = messages.map((message) => ({
-    role: message.role === "assistant" ? "model" : "user",
-    parts: [{ text: message.content }],
-  }));
+RULES:
+- Be warm, respectful, calm, and supportive.
+- Never give a definitive diagnosis.
+- Never recommend specific drug dosages.
+- Never invent medical facts or claim certainty when information is incomplete.
+- Ask relevant follow-up questions when essential information is missing.
+- Recommend professional care for serious, persistent, or unclear symptoms.
+- For potentially life-threatening symptoms, advise seeking emergency medical care immediately.
+- Consider practical guidance suitable for communities with limited healthcare access.
+- End each response with exactly one appropriate urgency line.
 
-  const response = await ai.models.generateContent({
+Use these urgency classifications:
+URGENCY: 🔴 EMERGENCY
+URGENCY: 🟡 CLINIC VISIT RECOMMENDED
+URGENCY: 🟢 HOME CARE
+
+Choose the level based on the available information. Do not claim a situation is safe when there is not enough information to assess it. For general health questions without symptoms, explain that urgency cannot be determined from the question alone.`;
+
+let ai;
+
+function getAI() {
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY not found in server environment.");
+  }
+
+  if (!ai) {
+    ai = new GoogleGenAI({ apiKey });
+  }
+
+  return ai;
+}
+
+async function generateReply(messages, systemInstruction, maxOutputTokens) {
+  if (!Array.isArray(messages) || messages.length === 0) {
+    throw new Error("At least one message is required.");
+  }
+
+  const conversation = messages.map((message) => {
+    if (
+      !message ||
+      !["user", "assistant"].includes(message.role) ||
+      typeof message.content !== "string" ||
+      !message.content.trim()
+    ) {
+      throw new Error("Invalid message format.");
+    }
+
+    return {
+      role: message.role === "assistant" ? "model" : "user",
+      parts: [{ text: message.content }],
+    };
+  });
+
+  // Gemini conversations must begin with a user message.
+  const firstUserIndex = conversation.findIndex(
+    (message) => message.role === "user"
+  );
+
+  if (firstUserIndex === -1) {
+    throw new Error("A user message is required.");
+  }
+
+  const validConversation = conversation.slice(firstUserIndex);
+
+  const response = await getAI().models.generateContent({
     model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
-    contents: conversation,
+    contents: validConversation,
     config: {
-      systemInstruction: SYSTEM_PROMPT,
-      maxOutputTokens: 600,
+      systemInstruction,
+      maxOutputTokens,
       temperature: 0.3,
     },
   });
 
   const text = response.text;
 
-  if (!text) {
-    throw new Error("Gemini returned an empty response");
+  if (!text || !text.trim()) {
+    throw new Error("Gemini returned an empty response.");
   }
 
-  return text;
+  return text.trim();
 }
 
+// Existing WhatsApp function — preserved.
+export async function sendWhatsAppMessage(messages) {
+  return generateReply(messages, WHATSAPP_SYSTEM_PROMPT, 600);
+}
 
+// New website function — used by chatRoutes.js.
+export async function sendWebsiteMessage(messages) {
+  return generateReply(messages, WEBSITE_SYSTEM_PROMPT, 1024);
+}
+
+// Existing urgency helper — preserved.
 export function parseUrgency(text) {
   const normalized = text.toUpperCase();
 
@@ -93,6 +153,7 @@ export function parseUrgency(text) {
   return null;
 }
 
+// Existing urgency helper — preserved.
 export function stripUrgencyLine(text) {
   return text.replace(/^URGENCY:\s*.*$/gim, "").trim();
 }
