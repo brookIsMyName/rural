@@ -120,21 +120,27 @@ export default function CaregiversPage({ user }) {
   const [locationError, setLocationError] = useState("");
 
   // Load cached or account location on mount.
-  useEffect(() => {
-    const cached = getCachedLocation();
+useEffect(() => {
+  let cancelled = false;
 
-    if (cached) {
-      setLocation(cached);
-      return;
+  async function loadLocation() {
+    const loc = await resolveLocation(user);
+
+    if (cancelled) return;
+
+    if (loc) {
+      setLocation(loc);
+    } else {
+      setAsking(true);
     }
+  }
 
-    if (hasCoordinates(user?.location)) {
-      setLocation(user.location);
-      return;
-    }
+  loadLocation();
 
-    setAsking(true);
-  }, [user]);
+  return () => {
+    cancelled = true;
+  };
+}, [user]);
 
   // Filter and sort the available local dataset.
   useEffect(() => {
