@@ -987,18 +987,6 @@ const toggleListening = () => {
                 →
               </button>
             </div>
-            {micStatus && (
-  <p
-    role="status"
-    style={{
-      color: "rgba(255,255,255,0.7)",
-      fontSize: 12,
-      margin: "8px 4px 0",
-    }}
-  >
-    {micStatus}
-  </p>
-)}
           </div>
         </div>
       </div>
