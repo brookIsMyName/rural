@@ -36,7 +36,7 @@ app.use(cors({
   credentials: true
 }));
 
-app.use("/api/symptoms",  symptomRoutes);   // before express.json() — keep as you had it
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
