@@ -3,7 +3,10 @@ import express from "express";
 
 const router = express.Router();
 
-const OVERPASS_URL = "https://overpass-api.de/api/interpreter";
+const OVERPASS_URLS = [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+];
 
 router.get("/nearby", async (req, res) => {
   const lat = Number(req.query.lat);
@@ -36,21 +39,39 @@ router.get("/nearby", async (req, res) => {
   `;
 
   try {
-    const response = await fetch(OVERPASS_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "application/json",
-      },
-      body: `data=${encodeURIComponent(query)}`,
-      signal: AbortSignal.timeout(25000),
-    });
+    let data = null;
+    let lastError = null;
 
-    if (!response.ok) {
-      throw new Error(`OpenStreetMap provider returned ${response.status}`);
+    for (const url of OVERPASS_URLS) {
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json",
+            "User-Agent": "SalviaHealth/1.0",
+          },
+          body: `data=${encodeURIComponent(query)}`,
+          signal: AbortSignal.timeout(20000),
+        });
+
+        if (!response.ok) {
+          lastError = new Error(
+            `Overpass returned HTTP ${response.status}`
+          );
+          continue;
+        }
+
+        data = await response.json();
+        break;
+      } catch (error) {
+        lastError = error;
+      }
     }
 
-    const data = await response.json();
+    if (!data) {
+      throw lastError || new Error("All Overpass servers failed");
+    }
 
     const facilities = (data.elements ?? [])
       .map((item) => {
