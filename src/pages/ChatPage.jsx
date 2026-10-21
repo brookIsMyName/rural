@@ -150,11 +150,46 @@ const isPlayingRef = useRef(false);
       r.continuous = false;
       r.interimResults = true;
 
-      r.onstart = () => setListening(true);
+   r.onstart = () => {
+  setListening(true);
+  setMicStatus("Listening... Speak now.");
+};
 
-      r.onend = () => setListening(false);
+r.onend = () => {
+  setListening(false);
 
-      r.onerror = () => setListening(false);
+  setMicStatus((previous) =>
+    previous === "Listening... Speak now."
+      ? "Listening stopped. Tap the microphone to try again."
+      : previous
+  );
+};
+
+r.onerror = (event) => {
+  setListening(false);
+
+  const errors = {
+    "not-allowed":
+      "Microphone access was denied. Check your browser permissions.",
+    "service-not-allowed":
+      "The browser's speech recognition service is unavailable.",
+    "network":
+      "Speech recognition needs a working connection. Please try again.",
+    "no-speech":
+      "No speech was detected. Tap the microphone and speak clearly.",
+    "audio-capture":
+      "No working microphone was detected.",
+    "language-not-supported":
+      "Speech recognition does not support the selected language.",
+    "aborted":
+      "Speech recognition was interrupted. Please try again.",
+  };
+
+  setMicStatus(
+    errors[event.error] ||
+      `Microphone error: ${event.error}. Please try again.`
+  );
+};
 
       r.onresult = (e) => {
         let transcript = "";
@@ -952,6 +987,18 @@ const toggleListening = () => {
                 →
               </button>
             </div>
+            {micStatus && (
+  <p
+    role="status"
+    style={{
+      color: "rgba(255,255,255,0.7)",
+      fontSize: 12,
+      margin: "8px 4px 0",
+    }}
+  >
+    {micStatus}
+  </p>
+)}
           </div>
         </div>
       </div>
