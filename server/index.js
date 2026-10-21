@@ -55,7 +55,7 @@ app.use("/api/auth",      authRoutes);
 app.use("/api/location",  locationRoutes);
 app.use("/api/chat",      chatRoutes);
 app.use("/api/whatsapp",  whatsappRoutes);  // ← NEW
-
+app.use("/api/symptoms", symptomRoutes);
 app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 app.get("/",           (_req, res) => res.send("API running..."));
 
