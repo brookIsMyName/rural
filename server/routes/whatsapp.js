@@ -17,7 +17,7 @@ const requiredEnv = [
   "TWILIO_ACCOUNT_SID",
   "TWILIO_AUTH_TOKEN",
   "TWILIO_WHATSAPP_NUMBER",
-  "ANTHROPIC_API_KEY",
+  "GEMINI_API_KEY",
 ];
 
 const missingEnv = () =>
@@ -147,7 +147,7 @@ router.get("/ping", (_req, res) => {
     ok:             true,
     missing_env:    missing,
     twilio_number:  process.env.TWILIO_WHATSAPP_NUMBER || "❌ NOT SET",
-    anthropic_key:  process.env.ANTHROPIC_API_KEY      ? "✅ SET" : "❌ MISSING — add to server/.env",
+    gemini_key:  process.env.GEMINI_API_KEY      ? "✅ SET" : "❌ MISSING — add to server/.env",
     twilio_sid:     process.env.TWILIO_ACCOUNT_SID     ? "✅ SET" : "❌ MISSING",
     twilio_token:   process.env.TWILIO_AUTH_TOKEN      ? "✅ SET" : "❌ MISSING",
   });

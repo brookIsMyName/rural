@@ -68,7 +68,9 @@ mongoose
       console.log(`📱 WhatsApp webhook: http://localhost:${PORT}/api/whatsapp/incoming`);
     });
   })
-  .catch((err) => {
-    console.error("❌ MongoDB failed:", err.message);
-    process.exit(1);
-  });
+  .catch ((error) => {
+  console.error("❌ MongoDB failed:", error);
+  console.error("Error name:", error.name);
+  console.error("Error message:", error.message);
+  process.exit(1);
+})
