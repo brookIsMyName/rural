@@ -1,5 +1,5 @@
 // server/index.js
-
+import caregiversRoutes from "./routes/caregivers.js";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import dotenv from "dotenv";
@@ -53,6 +53,7 @@ app.use(passport.session());
 
 app.use("/api/auth",      authRoutes);
 app.use("/api/location",  locationRoutes);
+app.use("/api/caregivers", caregiversRoutes);
 app.use("/api/chat",      chatRoutes);
 app.use("/api/whatsapp",  whatsappRoutes);  // ← NEW
 app.use("/api/symptoms", symptomRoutes);

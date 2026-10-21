@@ -5,73 +5,44 @@ import { t } from "../utils/translate";
 import {
   resolveLocation,
   requestGPSLocation,
+  clearLocationCache,
 } from "../utils/useLocation";
-import caregivers from "../data/caregivers.json";
 import { API_BASE } from "../config/api";
 
 const TYPE_COLOR = {
-  Clinic: "#0ea5e9",
-  NGO: "#8b5cf6",
-  CHW: "#10b981",
-  Hotline: "#f59e0b",
+  Hospital: "#0ea5e9",
+  Clinic: "#10b981",
+  Doctor: "#8b5cf6",
+  Pharmacy: "#f59e0b",
 };
 
-const TYPES = ["All", "Clinic", "NGO", "CHW", "Hotline"];
+const TYPES = ["All", "Hospital", "Clinic", "Doctor", "Pharmacy"];
 
-// Normalize text so city/country matching is case-insensitive.
-function normalize(value) {
-  return String(value ?? "").trim().toLowerCase();
+function hasCoordinates(location) {
+  if (
+    location?.lat === null ||
+    location?.lat === undefined ||
+    location?.lng === null ||
+    location?.lng === undefined ||
+    location.lat === "" ||
+    location.lng === ""
+  ) {
+    return false;
+  }
+
+  const lat = Number(location.lat);
+  const lng = Number(location.lng);
+
+  return (
+    Number.isFinite(lat) &&
+    Number.isFinite(lng) &&
+    lat >= -90 &&
+    lat <= 90 &&
+    lng >= -180 &&
+    lng <= 180
+  );
 }
 
-// Filter facilities by the known city, region, and country.
-// Nationwide resources and hotlines can remain visible.
-
-function normalize(value) {
-  return String(value ?? "").trim().toLowerCase();
-}
-
-function filterByLocation(list, loc) {
-  if (!loc?.country) return list;
-
-  const userCountry = normalize(loc.country);
-  const userCity = normalize(loc.city);
-  const userRegion = normalize(loc.region);
-
-  return list.filter((item) => {
-    const facilityCountry = normalize(item.country);
-
-    // Without a country field, we cannot reliably determine
-    // whether a facility belongs to the user's country.
-    if (!facilityCountry || facilityCountry !== userCountry) {
-      return false;
-    }
-
-    // National services are eligible only in their own country.
-    if (item.type === "Hotline" || item.nationwide) {
-      return true;
-    }
-
-    const facilityLocation = normalize(
-      `${item.city ?? ""} ${item.region ?? ""}`
-    );
-
-    // Prefer city/region matches within the correct country.
-    if (userCity && facilityLocation.includes(userCity)) {
-      return true;
-    }
-
-    if (userRegion && facilityLocation.includes(userRegion)) {
-      return true;
-    }
-
-    // If the facility is in the correct country but lacks
-    // city/region details, keep it without claiming proximity.
-    return !item.city && !item.region;
-  });
-}
-
-
-// Haversine distance in kilometres.
 function distKm(lat1, lng1, lat2, lng2) {
   const values = [lat1, lng1, lat2, lng2].map(Number);
 
@@ -81,7 +52,7 @@ function distKm(lat1, lng1, lat2, lng2) {
 
   const [latitude1, longitude1, latitude2, longitude2] = values;
   const radians = (degrees) => (degrees * Math.PI) / 180;
-  const R = 6371;
+  const earthRadius = 6371;
 
   const dLat = radians(latitude2 - latitude1);
   const dLng = radians(longitude2 - longitude1);
@@ -92,21 +63,37 @@ function distKm(lat1, lng1, lat2, lng2) {
       Math.cos(radians(latitude2)) *
       Math.sin(dLng / 2) ** 2;
 
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-function hasCoordinates(location) {
   return (
-    Number.isFinite(Number(location?.lat)) &&
-    Number.isFinite(Number(location?.lng))
+    earthRadius *
+    2 *
+    Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
   );
 }
 
 function getDistanceLabel(km) {
   if (km == null) return null;
-  if (km < 1) return "<1 km";
-  return `${Math.round(km)} km`;
+  if (km < 1) return `${Math.round(km * 1000)} m`;
+
+  return `${km.toFixed(1)} km`;
 }
+
+const panelStyle = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: 16,
+  padding: 24,
+  color: "#fff",
+  fontFamily: "'DM Sans', sans-serif",
+};
+
+const buttonStyle = {
+  borderRadius: 10,
+  padding: "10px 18px",
+  fontFamily: "'DM Sans', sans-serif",
+  fontSize: 14,
+  fontWeight: 600,
+  cursor: "pointer",
+};
 
 export default function CaregiversPage({ user }) {
   useLang();
@@ -114,86 +101,131 @@ export default function CaregiversPage({ user }) {
   const [filter, setFilter] = useState("All");
   const [location, setLocation] = useState(null);
   const [asking, setAsking] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [list, setList] = useState(caregivers);
+  const [locationLoading, setLocationLoading] = useState(false);
+
+  const [list, setList] = useState([]);
+  const [facilitiesLoading, setFacilitiesLoading] = useState(false);
+  const [facilitiesError, setFacilitiesError] = useState("");
   const [locationError, setLocationError] = useState("");
 
-  // Load cached or account location on mount.
-useEffect(() => {
-  let cancelled = false;
-
-  async function loadLocation() {
-    const loc = await resolveLocation(user);
-
-    if (cancelled) return;
-
-    if (loc) {
-      setLocation(loc);
-    } else {
-      setAsking(true);
-    }
-  }
-
-  loadLocation();
-
-  return () => {
-    cancelled = true;
-  };
-}, [user]);
-
-  // Filter and sort the available local dataset.
+  // Resolve a recent location on page load.
   useEffect(() => {
-    if (!location) {
-      setList(caregivers);
+    let cancelled = false;
+
+    async function loadLocation() {
+      try {
+        const loc = await resolveLocation(user);
+
+        if (cancelled) return;
+
+        if (loc && hasCoordinates(loc)) {
+          setLocation(loc);
+        } else {
+          setAsking(true);
+        }
+      } catch {
+        if (!cancelled) {
+          setAsking(true);
+        }
+      }
+    }
+
+    loadLocation();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  // Fetch actual nearby facilities whenever the location changes.
+  useEffect(() => {
+    if (!location || !hasCoordinates(location)) {
+      setList([]);
+      setFacilitiesError("");
+      setFacilitiesLoading(false);
       return;
     }
 
-    const filtered = filterByLocation(caregivers, location);
+    const controller = new AbortController();
 
-    const withDistance = filtered.map((item) => {
-      const canCalculateDistance =
-        hasCoordinates(location) &&
-        hasCoordinates({ lat: item.lat, lng: item.lng });
+    async function loadFacilities() {
+      setFacilitiesLoading(true);
+      setFacilitiesError("");
 
-      return {
-        ...item,
-        _km: canCalculateDistance
-          ? distKm(
+      try {
+        const params = new URLSearchParams({
+          lat: String(location.lat),
+          lng: String(location.lng),
+          radius: "5000",
+        });
+
+        const response = await fetch(
+          `${API_BASE}/api/caregivers/nearby?${params.toString()}`,
+          { signal: controller.signal }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+
+          throw new Error(
+            errorData.message ||
+              "We couldn't retrieve nearby healthcare facilities."
+          );
+        }
+
+        const data = await response.json();
+
+        const facilities = (data.facilities ?? [])
+          .filter((facility) => hasCoordinates(facility))
+          .map((facility) => ({
+            ...facility,
+            _km: distKm(
               location.lat,
               location.lng,
-              item.lat,
-              item.lng
-            )
-          : null,
-      };
-    });
+              facility.lat,
+              facility.lng
+            ),
+          }))
+          .filter((facility) => facility._km !== null)
+          .sort((a, b) => a._km - b._km);
 
-    withDistance.sort((a, b) => {
-      if (a._km == null && b._km == null) return 0;
-      if (a._km == null) return 1;
-      if (b._km == null) return -1;
-      return a._km - b._km;
-    });
+        if (!controller.signal.aborted) {
+          setList(facilities);
+        }
+      } catch (error) {
+        if (error.name !== "AbortError" && !controller.signal.aborted) {
+          setList([]);
+          setFacilitiesError(error.message);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setFacilitiesLoading(false);
+        }
+      }
+    }
 
-    setList(withDistance);
+    loadFacilities();
+
+    return () => {
+      controller.abort();
+    };
   }, [location]);
 
+  // Request fresh GPS coordinates, with IP lookup as a fallback.
   const handleAllow = async () => {
-    setLoading(true);
+    setLocationLoading(true);
     setLocationError("");
 
     try {
-      // Try the device's current GPS location first.
       const loc = await requestGPSLocation();
 
-      if (!loc || !hasCoordinates(loc)) {
+      if (!hasCoordinates(loc)) {
         throw new Error("GPS did not return valid coordinates.");
       }
 
       setLocation(loc);
       setAsking(false);
     } catch {
-      // If GPS fails, try the backend's IP-based estimate.
       try {
         const response = await fetch(`${API_BASE}/api/location/ip`);
 
@@ -202,32 +234,40 @@ useEffect(() => {
         }
 
         const data = await response.json();
+        const loc = data.location;
 
-        if (data.location && hasCoordinates(data.location)) {
-          setLocation(data.location);
-          setAsking(false);
-        } else {
-          setLocation(null);
-          setLocationError(
-            "We couldn't determine your location. You can try again or browse the available directory."
-          );
-          setAsking(false);
+        if (!hasCoordinates(loc)) {
+          throw new Error("No valid location was returned.");
         }
+
+        const fallbackLocation = {
+          ...loc,
+          lat: Number(loc.lat),
+          lng: Number(loc.lng),
+          source: "ip",
+        };
+
+        setLocation(fallbackLocation);
+        setAsking(false);
       } catch {
         setLocation(null);
-        setLocationError(
-          "Location detection failed. You can try again or browse the available directory."
-        );
         setAsking(false);
+        setLocationError(
+          "We couldn't determine your location. Please try again or check your browser's location permissions."
+        );
       }
     } finally {
-      setLoading(false);
+      setLocationLoading(false);
     }
   };
 
+  // Clear old cached coordinates before asking the user to refresh.
   const handleChangeLocation = () => {
+    clearLocationCache();
     setLocation(null);
+    setList([]);
     setLocationError("");
+    setFacilitiesError("");
     setAsking(true);
   };
 
@@ -237,7 +277,10 @@ useEffect(() => {
       : list.filter((item) => item.type === filter);
 
   const locationLabel = location
-    ? [location.city, location.country].filter(Boolean).join(", ")
+    ? [location.city, location.region, location.country]
+        .filter(Boolean)
+        .filter((value, index, values) => values.indexOf(value) === index)
+        .join(", ")
     : "";
 
   return (
@@ -250,7 +293,6 @@ useEffect(() => {
         boxSizing: "border-box",
       }}
     >
-      {/* Header */}
       <div style={{ textAlign: "center", marginBottom: 32 }}>
         <h1
           style={{
@@ -265,7 +307,7 @@ useEffect(() => {
 
         <p
           style={{
-            color: "rgba(255,255,255,0.5)",
+            color: "rgba(255,255,255,0.6)",
             fontFamily: "'DM Sans', sans-serif",
             fontSize: 15,
           }}
@@ -276,43 +318,32 @@ useEffect(() => {
         </p>
       </div>
 
-      {/* Location permission prompt */}
       {asking && (
         <div
           style={{
-            background: "rgba(16,185,129,0.06)",
-            border: "1px solid rgba(16,185,129,0.2)",
-            borderRadius: 16,
-            padding: "28px 24px",
-            textAlign: "center",
-            margin: "0 auto 32px",
+            ...panelStyle,
             maxWidth: 520,
+            margin: "0 auto 32px",
+            textAlign: "center",
+            borderColor: "rgba(16,185,129,0.25)",
           }}
         >
           <div style={{ fontSize: 36, marginBottom: 12 }}>📍</div>
 
-          <h3
-            style={{
-              color: "#fff",
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 600,
-              fontSize: 17,
-              marginBottom: 8,
-            }}
-          >
+          <h3 style={{ margin: "0 0 8px", fontSize: 18 }}>
             {t("locationPromptTitle")}
           </h3>
 
           <p
             style={{
-              color: "rgba(255,255,255,0.55)",
-              fontFamily: "'DM Sans', sans-serif",
+              color: "rgba(255,255,255,0.65)",
               fontSize: 13,
-              lineHeight: 1.6,
+              lineHeight: 1.7,
               marginBottom: 20,
             }}
           >
-            {t("locationPromptDesc")}
+            Enable location to find mapped healthcare facilities near you.
+            Your GPS location gives a more accurate search than an IP estimate.
           </p>
 
           <div
@@ -325,80 +356,71 @@ useEffect(() => {
           >
             <button
               onClick={handleAllow}
-              disabled={loading}
+              disabled={locationLoading}
               style={{
-                background: "linear-gradient(135deg, #10b981, #059669)",
-                border: "none",
-                borderRadius: 10,
-                padding: "10px 22px",
+                ...buttonStyle,
+                background: "#059669",
                 color: "#fff",
-                fontFamily: "'DM Sans', sans-serif",
-                fontWeight: 600,
-                fontSize: 14,
-                cursor: loading ? "wait" : "pointer",
-                opacity: loading ? 0.7 : 1,
+                border: "none",
+                opacity: locationLoading ? 0.7 : 1,
               }}
             >
-              {loading ? t("locationDetecting") : t("locationAllow")}
+              {locationLoading
+                ? "Finding your location…"
+                : t("locationAllow")}
             </button>
 
             <button
               onClick={() => setAsking(false)}
+              disabled={locationLoading}
               style={{
+                ...buttonStyle,
                 background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                borderRadius: 10,
-                padding: "10px 22px",
-                color: "rgba(255,255,255,0.65)",
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: 14,
-                cursor: "pointer",
+                border: "1px solid rgba(255,255,255,0.15)",
+                color: "#fff",
               }}
             >
               {t("locationSkip")}
             </button>
           </div>
-
-          <p
-            style={{
-              marginTop: 14,
-              color: "rgba(255,255,255,0.35)",
-              fontSize: 11,
-              fontFamily: "'DM Sans', sans-serif",
-            }}
-          >
-            If GPS is unavailable, we'll try estimating your location using
-            your IP address.
-          </p>
         </div>
       )}
 
-      {/* Location error */}
       {locationError && (
         <div
-          role="status"
+          role="alert"
           style={{
+            ...panelStyle,
             marginBottom: 24,
-            padding: 16,
-            borderRadius: 12,
-            border: "1px solid rgba(245,158,11,0.3)",
-            background: "rgba(245,158,11,0.08)",
             color: "#fbbf24",
-            fontFamily: "'DM Sans', sans-serif",
+            borderColor: "rgba(245,158,11,0.3)",
             fontSize: 13,
-            lineHeight: 1.6,
+            lineHeight: 1.7,
           }}
         >
           {locationError}
+          <div>
+            <button
+              onClick={handleChangeLocation}
+              style={{
+                ...buttonStyle,
+                marginTop: 12,
+                color: "#10b981",
+                background: "transparent",
+                border: "1px solid rgba(16,185,129,0.4)",
+              }}
+            >
+              Try again
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Filter tabs */}
       <div
         style={{
           display: "flex",
           gap: 8,
-          marginBottom: 28,
+          marginBottom: 24,
           justifyContent: "center",
           flexWrap: "wrap",
         }}
@@ -408,25 +430,18 @@ useEffect(() => {
             key={type}
             onClick={() => setFilter(type)}
             style={{
+              ...buttonStyle,
+              padding: "8px 16px",
               background:
                 filter === type
                   ? "rgba(16,185,129,0.15)"
                   : "rgba(255,255,255,0.04)",
               border: `1px solid ${
                 filter === type
-                  ? "rgba(16,185,129,0.4)"
+                  ? "rgba(16,185,129,0.45)"
                   : "rgba(255,255,255,0.1)"
               }`,
-              borderRadius: 8,
-              padding: "7px 18px",
-              color:
-                filter === type
-                  ? "#10b981"
-                  : "rgba(255,255,255,0.65)",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 14,
-              cursor: "pointer",
-              fontWeight: filter === type ? 600 : 400,
+              color: filter === type ? "#10b981" : "#d1d5db",
             }}
           >
             {type}
@@ -437,14 +452,11 @@ useEffect(() => {
           <button
             onClick={handleChangeLocation}
             style={{
+              ...buttonStyle,
+              padding: "8px 14px",
               background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(255,255,255,0.1)",
-              borderRadius: 8,
-              padding: "7px 14px",
-              color: "rgba(255,255,255,0.6)",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 12,
-              cursor: "pointer",
+              color: "#d1d5db",
             }}
           >
             📍 Change location
@@ -452,225 +464,290 @@ useEffect(() => {
         )}
       </div>
 
-      {/* Facility cards */}
-      {filtered.length > 0 ? (
+      {facilitiesLoading && (
         <div
+          role="status"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-            gap: 16,
-          }}
-        >
-          {filtered.map((c) => (
-            <div
-              key={c.id}
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                borderRadius: 16,
-                padding: 24,
-                display: "flex",
-                flexDirection: "column",
-                gap: 14,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  gap: 12,
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      color: "#fff",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontWeight: 700,
-                      fontSize: 16,
-                      lineHeight: 1.4,
-                      marginBottom: 8,
-                    }}
-                  >
-                    {c.name}
-                  </div>
-
-                  <span
-                    style={{
-                      background: `${TYPE_COLOR[c.type] ?? "#64748b"}20`,
-                      border: `1px solid ${TYPE_COLOR[c.type] ?? "#64748b"}40`,
-                      borderRadius: 6,
-                      padding: "2px 10px",
-                      color: TYPE_COLOR[c.type] ?? "#94a3b8",
-                      fontSize: 11,
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {c.type}
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-end",
-                    gap: 4,
-                    flexShrink: 0,
-                  }}
-                >
-                  {c.emergency && (
-                    <span
-                      style={{
-                        background: "rgba(239,68,68,0.15)",
-                        border: "1px solid rgba(239,68,68,0.3)",
-                        borderRadius: 6,
-                        padding: "3px 8px",
-                        color: "#ef4444",
-                        fontSize: 11,
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontWeight: 600,
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      🔴 24/7
-                    </span>
-                  )}
-
-                  {c._km != null && (
-                    <span
-                      style={{
-                        color: "rgba(255,255,255,0.5)",
-                        fontSize: 11,
-                        fontFamily: "'DM Sans', sans-serif",
-                      }}
-                    >
-                      {getDistanceLabel(c._km)}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {(c.services ?? []).map((service) => (
-                  <span
-                    key={service}
-                    style={{
-                      background: "rgba(255,255,255,0.06)",
-                      borderRadius: 6,
-                      padding: "3px 10px",
-                      color: "rgba(255,255,255,0.65)",
-                      fontSize: 12,
-                      fontFamily: "'DM Sans', sans-serif",
-                    }}
-                  >
-                    {service}
-                  </span>
-                ))}
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 6,
-                  borderTop: "1px solid rgba(255,255,255,0.06)",
-                  paddingTop: 14,
-                }}
-              >
-                {[
-                  { icon: "📍", text: c.region },
-                  { icon: "🕐", text: c.availability },
-                  { icon: "📏", text: c.distance },
-                ]
-                  .filter((row) => row.text)
-                  .map((row) => (
-                    <div
-                      key={row.icon}
-                      style={{
-                        display: "flex",
-                        gap: 8,
-                        alignItems: "center",
-                      }}
-                    >
-                      <span style={{ fontSize: 14 }}>{row.icon}</span>
-                      <span
-                        style={{
-                          color: "rgba(255,255,255,0.6)",
-                          fontSize: 13,
-                          fontFamily: "'DM Sans', sans-serif",
-                        }}
-                      >
-                        {row.text}
-                      </span>
-                    </div>
-                  ))}
-              </div>
-
-              {c.phone && (
-                <a
-                  href={`tel:${c.phone}`}
-                  style={{
-                    display: "block",
-                    background: "rgba(16,185,129,0.1)",
-                    border: "1px solid rgba(16,185,129,0.25)",
-                    borderRadius: 10,
-                    padding: "10px 16px",
-                    color: "#10b981",
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontWeight: 600,
-                    fontSize: 14,
-                    textAlign: "center",
-                    textDecoration: "none",
-                  }}
-                >
-                  📞 {c.phone}
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div
-          style={{
+            color: "#d1d5db",
             textAlign: "center",
-            padding: "48px 24px",
-            borderRadius: 16,
-            border: "1px solid rgba(255,255,255,0.08)",
-            background: "rgba(255,255,255,0.03)",
-            color: "rgba(255,255,255,0.7)",
+            padding: 32,
             fontFamily: "'DM Sans', sans-serif",
           }}
         >
-          <div style={{ fontSize: 36, marginBottom: 12 }}>📍</div>
-          <h3 style={{ color: "#fff", marginBottom: 8 }}>
-            No matching listings found
-          </h3>
-          <p style={{ fontSize: 13, lineHeight: 1.7 }}>
-            We couldn't find relevant listings for this location in the
-            directory currently available. This doesn't mean there are no
-            healthcare facilities nearby.
+          <div style={{ fontSize: 28, marginBottom: 12 }}>🔎</div>
+          Searching OpenStreetMap for nearby healthcare facilities…
+        </div>
+      )}
+
+      {!facilitiesLoading && facilitiesError && (
+        <div
+          role="alert"
+          style={{
+            ...panelStyle,
+            textAlign: "center",
+            lineHeight: 1.7,
+          }}
+        >
+          <h3>Search temporarily unavailable</h3>
+          <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 13 }}>
+            {facilitiesError}
+          </p>
+          <button
+            onClick={() => setLocation((current) => current ? { ...current } : null)}
+            style={{
+              ...buttonStyle,
+              background: "#059669",
+              color: "#fff",
+              border: "none",
+            }}
+            disabled={!location}
+          >
+            Retry search
+          </button>
+        </div>
+      )}
+
+      {!facilitiesLoading &&
+        !facilitiesError &&
+        location &&
+        filtered.length > 0 && (
+          <>
+            <p
+              style={{
+                color: "rgba(255,255,255,0.6)",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 13,
+                marginBottom: 16,
+              }}
+            >
+              Found {filtered.length} mapped result
+              {filtered.length === 1 ? "" : "s"} within 5 km. Results are
+              ordered by straight-line distance.
+            </p>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns:
+                  "repeat(auto-fill, minmax(min(100%, 300px), 1fr))",
+                gap: 16,
+              }}
+            >
+              {filtered.map((facility) => (
+                <article
+                  key={facility.id}
+                  style={{
+                    ...panelStyle,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 14,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: 12,
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <div>
+                      <h3
+                        style={{
+                          fontSize: 16,
+                          lineHeight: 1.5,
+                          margin: "0 0 10px",
+                          overflowWrap: "anywhere",
+                        }}
+                      >
+                        {facility.name}
+                      </h3>
+
+                      <span
+                        style={{
+                          display: "inline-block",
+                          background: `${
+                            TYPE_COLOR[facility.type] ?? "#64748b"
+                          }20`,
+                          border: `1px solid ${
+                            TYPE_COLOR[facility.type] ?? "#64748b"
+                          }60`,
+                          color: TYPE_COLOR[facility.type] ?? "#cbd5e1",
+                          borderRadius: 6,
+                          padding: "3px 9px",
+                          fontSize: 11,
+                          fontWeight: 600,
+                        }}
+                      >
+                        {facility.type}
+                      </span>
+                    </div>
+
+                    <span
+                      style={{
+                        color: "#6ee7b7",
+                        fontSize: 12,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {getDistanceLabel(facility._km)}
+                    </span>
+                  </div>
+
+                  {facility.services?.length > 0 && (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                      {facility.services.map((service) => (
+                        <span
+                          key={service}
+                          style={{
+                            background: "rgba(255,255,255,0.06)",
+                            borderRadius: 6,
+                            padding: "4px 8px",
+                            color: "#d1d5db",
+                            fontSize: 12,
+                          }}
+                        >
+                          {service}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  <div
+                    style={{
+                      borderTop: "1px solid rgba(255,255,255,0.08)",
+                      paddingTop: 14,
+                      display: "grid",
+                      gap: 10,
+                      fontSize: 13,
+                      color: "rgba(255,255,255,0.7)",
+                      overflowWrap: "anywhere",
+                    }}
+                  >
+                    <div>📍 {facility.region}</div>
+
+                    {facility.availability && (
+                      <div>🕐 {facility.availability}</div>
+                    )}
+
+                    {facility.emergency && (
+                      <div style={{ color: "#fca5a5" }}>
+                        Emergency service tagged in map data
+                      </div>
+                    )}
+
+                    {facility.phone && (
+                      <div>
+                        📞{" "}
+                        <a
+                          href={`tel:${facility.phone}`}
+                          style={{ color: "#6ee7b7" }}
+                        >
+                          {facility.phone}
+                        </a>
+                      </div>
+                    )}
+
+                    {facility.website && (
+                      <div>
+                        🌐{" "}
+                        <a
+                          href={facility.website}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{
+                            color: "#6ee7b7",
+                            overflowWrap: "anywhere",
+                          }}
+                        >
+                          Official website
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </>
+        )}
+
+      {!facilitiesLoading &&
+        !facilitiesError &&
+        location &&
+        filtered.length === 0 && (
+          <div
+            style={{
+              ...panelStyle,
+              textAlign: "center",
+              padding: "40px 24px",
+              lineHeight: 1.7,
+            }}
+          >
+            <div style={{ fontSize: 36, marginBottom: 12 }}>📍</div>
+            <h3>No mapped facilities found nearby</h3>
+            <p
+              style={{
+                color: "rgba(255,255,255,0.65)",
+                fontSize: 13,
+              }}
+            >
+              No matching facilities were found in the current map data within
+              5 km. This does not mean there are no healthcare facilities in
+              your area.
+            </p>
+            <button
+              onClick={() => {
+                setFilter("All");
+                setLocation((current) =>
+                  current ? { ...current } : null
+                );
+              }}
+              style={{
+                ...buttonStyle,
+                marginTop: 12,
+                background: "#059669",
+                color: "#fff",
+                border: "none",
+              }}
+            >
+              Search again
+            </button>
+          </div>
+        )}
+
+      {!location && !asking && !locationError && (
+        <div style={{ ...panelStyle, textAlign: "center", lineHeight: 1.7 }}>
+          <h3>Location needed</h3>
+          <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 13 }}>
+            Set your location to search for healthcare facilities nearby.
           </p>
           <button
             onClick={handleChangeLocation}
             style={{
-              marginTop: 16,
-              background: "rgba(16,185,129,0.12)",
-              border: "1px solid rgba(16,185,129,0.3)",
-              borderRadius: 10,
-              padding: "10px 16px",
-              color: "#10b981",
-              cursor: "pointer",
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 600,
+              ...buttonStyle,
+              background: "#059669",
+              color: "#fff",
+              border: "none",
             }}
           >
-            Try another location
+            Find facilities near me
           </button>
         </div>
       )}
+
+      <p
+        style={{
+          color: "rgba(255,255,255,0.4)",
+          fontFamily: "'DM Sans', sans-serif",
+          fontSize: 11,
+          textAlign: "center",
+          marginTop: 32,
+          lineHeight: 1.7,
+        }}
+      >
+        Map data © OpenStreetMap contributors. Listings may be incomplete or
+        outdated. Verify facility details before relying on them.
+      </p>
     </div>
   );
 }
